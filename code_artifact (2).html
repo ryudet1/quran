@@ -1,0 +1,2962 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>القرآن الكريم | قراءة واستماع وتجويد وحفظ</title>
+  <meta name="description" content="تطبيق القرآن الكريم المتكامل للقراءة بالرسم العثماني والتجويد الملون، والاستماع لكبار القراء، والتفسير الميسر، ونظام الحفظ والتسميع الصوتي التفاعلي." />
+  <meta name="theme-color" content="#0b1120" />
+
+  <!-- Open Graph Metadata لمشاركة الموقع بشكل احترافي -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="القرآن الكريم | قراءة واستماع وتجويد وحفظ" />
+  <meta property="og:description" content="تطبيق ويب متكامل للقرآن الكريم بالرسم العثماني، التجويد الملون، التفسير الميسر، التلاوات الصوتية، ونظام الحفظ والتسميع الصوتي." />
+  <meta property="og:locale" content="ar_AR" />
+
+  <!-- Inline SVG Favicon (لا يحتاج أي ملفات خارجية لمنع أخطاء 404 على GitHub Pages) -->
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f766e'/%3E%3Cpath d='M38 16a16 16 0 1 0 10 28.5A13 13 0 1 1 38 16z' fill='%23ffffff'/%3E%3Ccircle cx='44' cy='22' r='3' fill='%23fbbf24'/%3E%3C/svg%3E"
+  />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Amiri Quran (للرسم العثماني), Amiri (للعناوين), Cairo (لواجهة المستخدم) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. متغيرات الألوان والسمات (الوضع الداكن الزمردي افتراضياً، الفاتح، الدافئ)
+       ========================================================================== */
+    :root,
+    [data-theme="dark"] {
+      --bg-app: #090f1d;
+      --bg-surface: #11192b;
+      --bg-surface-alt: #1a2438;
+      --bg-header: rgba(13, 20, 36, 0.9);
+      --bg-highlight: rgba(16, 185, 129, 0.13);
+      --bg-highlight-strong: rgba(16, 185, 129, 0.25);
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-color: #22304a;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-contrast: #06281e;
+      --accent-soft: rgba(16, 185, 129, 0.14);
+      --player-bg: rgba(15, 23, 42, 0.96);
+      --mushaf-border: #2a3a57;
+      --scrollbar-thumb: #2b3b57;
+    }
+
+    [data-theme="light"] {
+      --bg-app: #f6f9fc;
+      --bg-surface: #ffffff;
+      --bg-surface-alt: #eef3f8;
+      --bg-header: rgba(255, 255, 255, 0.92);
+      --bg-highlight: #ecfdf5;
+      --bg-highlight-strong: #d1fae5;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --accent: #0f766e;
+      --accent-hover: #115e59;
+      --accent-contrast: #ffffff;
+      --accent-soft: rgba(15, 118, 110, 0.1);
+      --player-bg: rgba(255, 255, 255, 0.97);
+      --mushaf-border: #cbd5e1;
+      --scrollbar-thumb: #cbd5e1;
+    }
+
+    [data-theme="sepia"] {
+      --bg-app: #f2e8d5;
+      --bg-surface: #faf4e6;
+      --bg-surface-alt: #ede1c9;
+      --bg-header: rgba(250, 244, 230, 0.93);
+      --bg-highlight: #e4d8be;
+      --bg-highlight-strong: #d9c9a8;
+      --text-primary: #2b2017;
+      --text-secondary: #5a4635;
+      --text-muted: #7c6652;
+      --border-color: #dccdb0;
+      --accent: #0f766e;
+      --accent-hover: #115e59;
+      --accent-contrast: #ffffff;
+      --accent-soft: rgba(15, 118, 110, 0.12);
+      --player-bg: rgba(250, 244, 230, 0.97);
+      --mushaf-border: #d2bf9b;
+      --scrollbar-thumb: #c8b590;
+    }
+
+    /* ==========================================================================
+       2. منع التمرير الأفقي والأنماط الأساسية
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .font-quran {
+      font-family: 'Amiri Quran', 'Amiri', serif;
+      word-spacing: 2px;
+    }
+
+    .font-amiri {
+      font-family: 'Amiri', serif;
+    }
+
+    .theme-surface {
+      background-color: var(--bg-surface);
+      border-color: var(--border-color);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .theme-surface-alt {
+      background-color: var(--bg-surface-alt);
+      border-color: var(--border-color);
+    }
+
+    .theme-border {
+      border-color: var(--border-color);
+    }
+
+    .theme-text-secondary {
+      color: var(--text-secondary);
+    }
+
+    .theme-text-muted {
+      color: var(--text-muted);
+    }
+
+    .theme-accent-text {
+      color: var(--accent);
+    }
+
+    .theme-accent-bg {
+      background-color: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .theme-accent-soft {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* ==========================================================================
+       3. الشريط العلوي المتجاوب (Header) - إصلاح جذري للكمبيوتر والجوال
+       ========================================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      background-color: var(--bg-header);
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* تخطيط الجوال والتابلت (< 960px): صفّان نظيفان بدون أي تداخل */
+    .header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        "brand controls"
+        "modes modes";
+      align-items: center;
+      gap: 8px 10px;
+      padding: 8px 12px;
+      width: 100%;
+    }
+
+    .header-brand {
+      grid-area: brand;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .header-modes {
+      grid-area: modes;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      width: 100%;
+      padding: 4px;
+      border-radius: 14px;
+      background-color: var(--bg-surface-alt);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-modes button {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 7px 6px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .header-controls {
+      grid-area: controls;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* إظهار زر تدوير السمة السريع على الجوال وإخفاء الـ 3 أزرار لتوفير المساحة */
+    .theme-pill-desktop {
+      display: none;
+    }
+    .theme-cycle-mobile {
+      display: inline-flex;
+    }
+
+    /* تخطيط الشاشات الكبيرة (>= 960px): صف واحد متوازن من 3 أجزاء */
+    @media (min-width: 960px) {
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 20px;
+      }
+
+      .header-modes {
+        display: inline-flex;
+        align-items: center;
+        width: auto;
+        flex-shrink: 0;
+      }
+
+      .header-modes button {
+        padding: 7px 14px;
+        font-size: 0.85rem;
+      }
+
+      .theme-pill-desktop {
+        display: inline-flex;
+      }
+      .theme-cycle-mobile {
+        display: none;
+      }
+    }
+
+    /* ==========================================================================
+       4. شريط التمرير والآيات وشارة السورة
+       ========================================================================== */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 9999px;
+    }
+
+    .ayah-card-active {
+      background-color: var(--bg-highlight) !important;
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .mushaf-ayah {
+      cursor: pointer;
+      border-radius: 0.5rem;
+      padding: 0.1rem 0.22rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .mushaf-ayah:hover {
+      background-color: var(--bg-highlight);
+    }
+
+    .mushaf-ayah-active {
+      background-color: var(--bg-highlight-strong) !important;
+      box-shadow: 0 2px 0 0 var(--accent);
+    }
+
+    .surah-badge {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .surah-badge::before {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 6px;
+      background-color: var(--bg-surface-alt);
+      border: 1px solid var(--border-color);
+      transform: rotate(45deg);
+      transition: all 0.2s ease;
+      z-index: 0;
+    }
+    .surah-item-active .surah-badge::before {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
+    .surah-item-active .surah-badge span {
+      color: var(--accent-contrast);
+    }
+    .surah-badge span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .surah-banner-pattern {
+      background-image: radial-gradient(var(--accent) 0.75px, transparent 0.75px);
+      background-size: 18px 18px;
+      opacity: 0.09;
+    }
+
+    .ayah-end-symbol {
+      font-family: 'Amiri', serif;
+      color: var(--accent);
+      font-size: 0.76em;
+      white-space: nowrap;
+      margin-inline: 0.25rem;
+      font-weight: 700;
+    }
+
+    /* شريط التقدم الصوتي */
+    input[type="range"].quran-range {
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border-color);
+      height: 5px;
+      border-radius: 9999px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"].quran-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"].quran-range::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .toast-enter {
+      animation: toastIn 0.22s ease forwards;
+    }
+
+    /* ==========================================================================
+       5. ألوان مصحف التجويد المعتمدة (عالية الوضوح في السمات الثلاث)
+       ========================================================================== */
+    .tj-rule {
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background-color 0.15s ease;
+    }
+    .tj-rule:hover {
+      background-color: rgba(16, 185, 129, 0.16);
+    }
+
+    /* الوضع الفاتح والدافئ */
+    .tj-silent { color: #8c96a5; }
+    .tj-madd-normal { color: #d97706; }
+    .tj-madd-permissible { color: #ea580c; }
+    .tj-madd-obligatory { color: #dc2626; }
+    .tj-madd-necessary { color: #991b1b; }
+    .tj-qalqalah { color: #0284c7; }
+    .tj-ghunnah { color: #15803d; }
+    .tj-ikhfa { color: #0d9488; }
+    .tj-iqlab { color: #9333ea; }
+    .tj-idgham-ghunnah { color: #16a34a; }
+    .tj-idgham-no-ghunnah { color: #a21caf; }
+
+    /* الوضع الداكن */
+    [data-theme="dark"] .tj-silent { color: #808ea3; }
+    [data-theme="dark"] .tj-madd-normal { color: #fbbf24; }
+    [data-theme="dark"] .tj-madd-permissible { color: #fb923c; }
+    [data-theme="dark"] .tj-madd-obligatory { color: #f87171; }
+    [data-theme="dark"] .tj-madd-necessary { color: #ef4444; }
+    [data-theme="dark"] .tj-qalqalah { color: #38bdf8; }
+    [data-theme="dark"] .tj-ghunnah { color: #4ade80; }
+    [data-theme="dark"] .tj-ikhfa { color: #2dd4bf; }
+    [data-theme="dark"] .tj-iqlab { color: #c084fc; }
+    [data-theme="dark"] .tj-idgham-ghunnah { color: #34d399; }
+    [data-theme="dark"] .tj-idgham-no-ghunnah { color: #e879f9; }
+
+    /* ==========================================================================
+       6. أنماط وضع الحفظ والتسميع الصوتي التفاعلي
+       ========================================================================== */
+    .mem-word {
+      display: inline-block;
+      margin: 0.22rem 0.2rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.55rem;
+      transition: all 0.22s ease;
+      vertical-align: middle;
+    }
+
+    .mem-word-hidden {
+      background-color: var(--bg-surface-alt);
+      border: 1px dashed var(--border-color);
+      color: transparent !important;
+      user-select: none;
+      text-shadow: 0 0 11px var(--text-muted);
+    }
+
+    .mem-word-peek {
+      background-color: var(--bg-surface-alt);
+      border: 1px dashed var(--accent);
+      color: var(--text-secondary);
+    }
+
+    .mem-word-current {
+      background-color: var(--accent-soft);
+      border: 2px solid var(--accent);
+      color: transparent !important;
+      user-select: none;
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .mem-word-current-peek {
+      background-color: var(--accent-soft);
+      border: 2px solid var(--accent);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .mem-word-correct {
+      background-color: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #15803d;
+    }
+    [data-theme="dark"] .mem-word-correct {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+
+    .mem-word-wrong {
+      background-color: rgba(239, 68, 68, 0.16);
+      border: 2px solid #ef4444;
+      color: #dc2626;
+      animation: memShake 0.3s ease;
+    }
+    [data-theme="dark"] .mem-word-wrong {
+      background-color: rgba(239, 68, 68, 0.22);
+      color: #f87171;
+    }
+
+    .mem-word-hint {
+      background-color: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #b45309;
+    }
+    [data-theme="dark"] .mem-word-hint {
+      color: #fbbf24;
+    }
+
+    @keyframes memShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    @keyframes micPulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
+      70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .mic-recording-pulse {
+      animation: micPulse 1.4s infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500/20">
+
+  <!-- ========================================================================
+       1. الشريط العلوي (Header) - متوازن ومرتب على الكمبيوتر والجوال
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+
+      <!-- الجزء الأول (اليمين): زر القائمة للموبايل + شعار القرآن الكريم -->
+      <div class="header-brand">
+        <button
+          id="mobileSidebarBtn"
+          type="button"
+          aria-label="فتح فهرس السور"
+          class="lg:hidden p-2 rounded-xl theme-surface-alt border hover:opacity-85 transition shrink-0"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <button
+          id="brandLogoBtn"
+          type="button"
+          title="العودة إلى سورة الفاتحة"
+          class="flex items-center gap-2.5 text-right min-w-0 group"
+        >
+          <div class="w-9 h-9 rounded-xl theme-accent-bg flex items-center justify-center shadow-sm shrink-0 group-hover:scale-105 transition">
+            <!-- أيقونة هلال ومصحف إسلامي نظيفة ومغلقة بشكل صحيح -->
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h1 class="font-amiri text-xl sm:text-2xl font-bold leading-none truncate">القرآن الكريم</h1>
+            <span class="hidden sm:block text-[11px] theme-text-muted leading-tight mt-0.5 truncate">قراءة • تجويد • حفظ</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- الجزء الثاني (الوسط على الكمبيوتر / الصف الثاني كاملاً على الجوال): مبدّل الأوضاع -->
+      <nav class="header-modes" aria-label="أوضاع العرض">
+        <button id="modeVerseBtn" type="button">
+          <span>آية بآية</span>
+        </button>
+        <button id="modeMushafBtn" type="button">
+          <span>المصحف</span>
+        </button>
+        <button id="modeMemorizeBtn" type="button">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+          </svg>
+          <span>الحفظ والتسميع</span>
+        </button>
+      </nav>
+
+      <!-- الجزء الثالث (اليسار): التحكم بحجم الخط + مبدّل السمة -->
+      <div class="header-controls">
+        <!-- حجم الخط القرآني -->
+        <div class="flex items-center rounded-xl theme-surface-alt border p-0.5">
+          <button
+            id="fontDecreaseBtn"
+            type="button"
+            title="تصغير حجم الخط"
+            class="px-2 py-1 text-xs font-bold rounded-lg hover:opacity-75 transition"
+          >
+            أ-
+          </button>
+          <span id="fontSizeLabel" class="text-[11px] font-bold px-1.5 theme-text-muted select-none">32</span>
+          <button
+            id="fontIncreaseBtn"
+            type="button"
+            title="تكبير حجم الخط"
+            class="px-2 py-1 text-xs font-bold rounded-lg hover:opacity-75 transition"
+          >
+            أ+
+          </button>
+        </div>
+
+        <!-- زر تدوير السمة المختصر للجوال (< 960px) -->
+        <button
+          id="mobileThemeCycleBtn"
+          type="button"
+          title="تغيير المظهر (داكن / فاتح / دافئ)"
+          class="theme-cycle-mobile items-center justify-center p-2 rounded-xl theme-surface-alt border hover:opacity-85 transition"
+        >
+          <svg id="mobileThemeIcon" class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+          </svg>
+        </button>
+
+        <!-- مبدّل السمات الثلاث للكمبيوتر (>= 960px) -->
+        <div class="theme-pill-desktop items-center rounded-xl theme-surface-alt border p-0.5" role="group" aria-label="تغيير المظهر">
+          <button data-theme-btn="light" type="button" title="الوضع الفاتح" class="p-1.5 px-2 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+          </button>
+          <button data-theme-btn="sepia" type="button" title="وضع القراءة الدافئ" class="p-1.5 px-2 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+          </button>
+          <button data-theme-btn="dark" type="button" title="الوضع الداكن" class="p-1.5 px-2 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. الحاوية الرئيسية (الشريط الجانبي + منطقة قراءة السورة)
+       ======================================================================== -->
+  <div class="flex-1 max-w-[1600px] w-full mx-auto flex relative">
+
+    <!-- خلفية معتمة للدرج الجانبي على الجوال -->
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-50 hidden lg:hidden"
+    ></div>
+
+    <!-- الشريط الجانبي: فهرس السور الـ 114 والمحفوظات وآخر قراءة -->
+    <aside
+      id="sidebar"
+      class="fixed lg:sticky top-0 lg:top-[61px] right-0 z-50 lg:z-30 h-screen lg:h-[calc(100vh-61px)] w-80 max-w-[88vw] theme-surface border-l flex flex-col transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none"
+    >
+      <!-- رأس الدرج الجانبي للموبايل -->
+      <div class="flex items-center justify-between p-4 border-b theme-border lg:hidden">
+        <span class="font-bold text-base">فهرس السور والمحفوظات</span>
+        <button id="closeSidebarBtn" type="button" class="p-1.5 rounded-lg theme-surface-alt border" aria-label="إغلاق">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- بطاقة آخر قراءة -->
+      <div id="lastReadContainer" class="px-3 pt-3 hidden">
+        <button
+          id="lastReadBtn"
+          type="button"
+          class="w-full text-right p-3 rounded-xl theme-accent-soft border border-emerald-500/25 hover:opacity-90 transition flex items-center justify-between gap-2"
+        >
+          <div class="min-w-0">
+            <div class="text-[11px] font-bold opacity-85 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>متابعة آخر قراءة</span>
+            </div>
+            <div id="lastReadText" class="text-sm font-bold mt-0.5 truncate"></div>
+          </div>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- تبويبات الشريط الجانبي -->
+      <div class="px-3 pt-3">
+        <div class="grid grid-cols-2 gap-1 p-1 rounded-xl theme-surface-alt border text-xs font-bold">
+          <button id="tabSurahsBtn" type="button" class="py-2 rounded-lg transition">
+            السور (١١٤)
+          </button>
+          <button id="tabBookmarksBtn" type="button" class="py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+            <span>المحفوظات</span>
+            <span id="bookmarksCountBadge" class="px-1.5 py-0.5 text-[10px] rounded-full theme-accent-soft">٠</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- حقل البحث في السور -->
+      <div id="surahSearchWrap" class="p-3 border-b theme-border">
+        <div class="relative">
+          <svg class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 theme-text-muted pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          <input
+            id="surahSearchInput"
+            type="text"
+            placeholder="ابحث باسم السورة أو رقمها..."
+            class="w-full pr-9 pl-3 py-2 text-sm rounded-xl theme-surface-alt border focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+          />
+        </div>
+      </div>
+
+      <!-- قائمة السور -->
+      <div id="surahListContainer" class="flex-1 overflow-y-auto p-2.5 space-y-1 pb-28 lg:pb-24"></div>
+
+      <!-- قائمة المحفوظات -->
+      <div id="bookmarksListContainer" class="flex-1 overflow-y-auto p-2.5 space-y-2 pb-28 lg:pb-24 hidden"></div>
+    </aside>
+
+    <!-- منطقة القراءة الرئيسية -->
+    <main class="flex-1 min-w-0 px-3 sm:px-6 lg:px-10 py-5 sm:py-7 pb-44 sm:pb-36">
+      <div class="max-w-4xl mx-auto">
+
+        <!-- بانر معلومات السورة -->
+        <section id="surahBanner" class="relative overflow-hidden rounded-2xl theme-surface border p-5 sm:p-7 mb-6 text-center shadow-sm">
+          <div class="absolute inset-0 surah-banner-pattern pointer-events-none"></div>
+          <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full theme-accent-soft text-xs font-bold mb-3">
+              <span id="bannerSurahNumber">السورة ١</span>
+              <span>•</span>
+              <span id="bannerRevelationType">مكية</span>
+              <span>•</span>
+              <span id="bannerAyahCount">٧ آيات</span>
+            </div>
+
+            <h2 id="bannerSurahName" class="font-amiri text-3xl sm:text-4xl font-bold mb-1">
+              سُورَةُ ٱلْفَاتِحَةِ
+            </h2>
+            <p id="bannerEnglishName" class="text-xs sm:text-sm theme-text-muted mb-4">
+              Al-Faatiha — The Opening
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <button
+                id="playFullSurahBtn"
+                type="button"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl theme-accent-bg text-xs sm:text-sm font-bold shadow-sm hover:opacity-90 transition"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+                <span>تشغيل السورة كاملة</span>
+              </button>
+
+              <button
+                id="toggleAllTafsirBtn"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-surface-alt border text-xs sm:text-sm font-semibold hover:opacity-85 transition"
+              >
+                <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+                <span id="toggleAllTafsirLabel">إظهار التفسير للكل</span>
+              </button>
+
+              <!-- زر تفعيل التجويد الملون -->
+              <button
+                id="toggleTajweedBtn"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-surface-alt border text-xs sm:text-sm font-semibold hover:opacity-85 transition"
+              >
+                <span class="flex items-center gap-0.5">
+                  <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                </span>
+                <span id="toggleTajweedLabel">التجويد الملون</span>
+              </button>
+
+              <!-- زر فتح نافذة دليل الألوان -->
+              <button
+                id="openTajweedModalBtn"
+                type="button"
+                class="hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-xl theme-surface-alt border text-xs font-semibold hover:opacity-85 transition"
+              >
+                <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+                <span>دليل الألوان</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- البسملة المزخرفة (تظهر للسور 2-114 عدا التوبة) -->
+        <div id="basmalahBlock" class="hidden text-center py-3 mb-5">
+          <p class="font-quran text-2xl sm:text-3xl md:text-4xl theme-accent-text select-text">
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+          </p>
+        </div>
+
+        <!-- حالة التحميل (Skeleton) -->
+        <div id="readerLoading" class="space-y-4 hidden">
+          <div class="rounded-2xl theme-surface border p-6 animate-pulse space-y-4">
+            <div class="h-4 w-28 rounded theme-surface-alt"></div>
+            <div class="h-7 w-full rounded theme-surface-alt"></div>
+            <div class="h-7 w-3/4 rounded theme-surface-alt"></div>
+          </div>
+          <div class="rounded-2xl theme-surface border p-6 animate-pulse space-y-4">
+            <div class="h-4 w-28 rounded theme-surface-alt"></div>
+            <div class="h-7 w-11/12 rounded theme-surface-alt"></div>
+            <div class="h-7 w-2/3 rounded theme-surface-alt"></div>
+          </div>
+        </div>
+
+        <!-- حالة الخطأ مع زر إعادة المحاولة -->
+        <div id="readerError" class="hidden rounded-2xl theme-surface border p-8 text-center space-y-4">
+          <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-500 mx-auto flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold">تعذر تحميل السورة</h3>
+          <p id="readerErrorMsg" class="text-sm theme-text-secondary max-w-md mx-auto">
+            يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.
+          </p>
+          <button
+            id="retryLoadBtn"
+            type="button"
+            class="px-5 py-2.5 rounded-xl theme-accent-bg text-sm font-bold hover:opacity-90 transition"
+          >
+            إعادة المحاولة
+          </button>
+        </div>
+
+        <!-- حاوية الآيات (آية بآية / المصحف) -->
+        <div id="ayahsContainer" class="space-y-4"></div>
+
+        <!-- ==================================================================
+             واجهة نظام الحفظ والتسميع الصوتي التفاعلي
+             ================================================================== -->
+        <section id="memorizationSection" class="hidden space-y-5">
+
+          <!-- إعدادات نطاق التسميع والإحصائيات -->
+          <div class="rounded-2xl theme-surface border p-4 sm:p-5 shadow-sm space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-bold">
+                <span class="theme-text-secondary">نطاق التسميع:</span>
+                <label class="flex items-center gap-1.5">
+                  <span class="theme-text-muted">من</span>
+                  <select id="memFromAyah" class="rounded-xl theme-surface-alt border px-2.5 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/40"></select>
+                </label>
+                <label class="flex items-center gap-1.5">
+                  <span class="theme-text-muted">إلى</span>
+                  <select id="memToAyah" class="rounded-xl theme-surface-alt border px-2.5 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/40"></select>
+                </label>
+                <button id="memFullSurahRangeBtn" type="button" class="px-2.5 py-1.5 rounded-xl theme-surface-alt border text-xs hover:border-emerald-500 transition">
+                  كامل السورة
+                </button>
+                <button id="memToggleRevealBtn" type="button" class="px-2.5 py-1.5 rounded-xl theme-surface-alt border text-xs hover:border-emerald-500 transition">
+                  إظهار الكلمات
+                </button>
+              </div>
+
+              <!-- الإحصائيات الفورية -->
+              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs font-bold">
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-500">
+                  سلسلة: <span id="memStreakCount">٠</span>
+                </span>
+                <span class="px-2.5 py-1 rounded-lg bg-red-500/15 text-red-500">
+                  أخطاء: <span id="memWrongCount">٠</span>
+                </span>
+                <span class="px-2.5 py-1 rounded-lg theme-accent-soft">
+                  الدقة: <span id="memAccuracy">١٠٠٪</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- شريط التقدم -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-[11px] font-semibold theme-text-muted">
+                <span id="memProgressLabel">التقدم: ٠ / ٠ كلمة</span>
+                <span id="memProgressPercent">٠٪</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full theme-surface-alt overflow-hidden">
+                <div id="memProgressBar" class="h-full theme-accent-bg transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- لوحة الميكروفون والتحكم الصوتي -->
+          <div class="rounded-2xl theme-surface border p-5 sm:p-6 shadow-sm text-center space-y-4">
+            <div class="flex flex-col items-center justify-center gap-3">
+              <button
+                id="memMicBtn"
+                type="button"
+                class="inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-2xl theme-accent-bg text-sm sm:text-base font-extrabold shadow-md hover:opacity-95 transition"
+              >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                </svg>
+                <span id="memMicBtnText">ابدأ التسميع الصوتي</span>
+              </button>
+
+              <div id="memStatusLine" class="text-xs sm:text-sm font-semibold theme-text-secondary">
+                اضغط على زر الميكروفون وابدأ بالتلاوة؛ ستظهر الآيات تدريجياً كلما قرأت بشكل صحيح.
+              </div>
+            </div>
+
+            <!-- مربع عرض الكلام الملتقط -->
+            <div id="memLiveTranscriptBox" class="hidden rounded-xl theme-surface-alt border p-3 text-right space-y-1">
+              <div class="flex items-center justify-between text-[11px] font-bold theme-text-muted">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                  ما تم التقاطه من صوتك:
+                </span>
+                <span id="memCurrentAyahBadge" class="theme-accent-text">الآية ١</span>
+              </div>
+              <p id="memLiveTranscriptText" class="text-sm sm:text-base font-semibold min-h-[1.5rem]"></p>
+            </div>
+
+            <!-- شريط التصحيح والملاحظات -->
+            <div id="memFeedbackBanner" class="hidden rounded-xl p-3 text-xs sm:text-sm font-bold"></div>
+
+            <!-- أزرار المساعدة السريعة -->
+            <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
+              <button
+                id="memHintBtn"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-surface-alt border text-xs sm:text-sm font-bold hover:border-amber-500 transition"
+              >
+                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                </svg>
+                <span>تلميح كلمة</span>
+              </button>
+
+              <button
+                id="memSkipBtn"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-surface-alt border text-xs sm:text-sm font-bold hover:border-emerald-500 transition"
+              >
+                <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
+                </svg>
+                <span>تخطي الكلمة</span>
+              </button>
+
+              <button
+                id="memHearAyahBtn"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-surface-alt border text-xs sm:text-sm font-bold hover:border-emerald-500 transition"
+              >
+                <svg class="w-4 h-4 theme-accent-text" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+                <span>سماع الآية</span>
+              </button>
+
+              <button
+                id="memRestartBtn"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-surface-alt border text-xs sm:text-sm font-bold hover:border-red-500 transition"
+              >
+                <svg class="w-4 h-4 theme-text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                <span>إعادة التسميع</span>
+              </button>
+            </div>
+
+            <!-- تنبيه المتصفحات التي لا تدعم Web Speech API -->
+            <div id="memMicFallbackNotice" class="hidden rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-500 font-semibold">
+              المتصفح الحالي لا يدعم التعرف الصوتي أو لم يتم منح إذن الميكروفون (يُنصح بمتصفح Chrome أو Edge). يمكنك التسميع بالكتابة أدناه بنفس نظام التصحيح الفوري.
+            </div>
+
+            <!-- حقل التسميع بالكتابة -->
+            <div class="pt-3 border-t theme-border">
+              <form id="memTypingForm" class="flex items-center gap-2 max-w-xl mx-auto">
+                <input
+                  id="memTypingInput"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="اكتب الكلمة هنا للتسميع بالكتابة واضغط Enter..."
+                  class="flex-1 min-w-0 px-3.5 py-2 text-xs sm:text-sm rounded-xl theme-surface-alt border focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                />
+                <button
+                  type="submit"
+                  class="px-4 py-2 rounded-xl theme-accent-bg text-xs sm:text-sm font-bold hover:opacity-90 transition shrink-0"
+                >
+                  تحقق
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- لوحة الكلمات المخفية -->
+          <div class="rounded-2xl theme-surface border-2 p-5 sm:p-8 shadow-sm" style="border-color: var(--mushaf-border);">
+            <div
+              id="memWordsContainer"
+              class="font-quran quran-text-scalable leading-[2.6] text-right"
+              style="font-size: 32px;"
+            ></div>
+          </div>
+        </section>
+
+        <!-- شريط التفسير المختصر في وضع المصحف -->
+        <div id="mushafTafsirBar" class="hidden mt-5 rounded-2xl theme-surface border p-4 sm:p-5 shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-lg theme-accent-soft" id="mushafTafsirBadge">التفسير الميسر - آية ١</span>
+            <button id="closeMushafTafsirBtn" type="button" class="text-xs theme-text-muted hover:underline">إخفاء</button>
+          </div>
+          <p id="mushafTafsirText" class="text-sm sm:text-base leading-relaxed theme-text-secondary"></p>
+        </div>
+
+        <!-- التنقل بين السور (السابقة / التالية) -->
+        <nav id="surahFooterNav" class="mt-8 pt-6 border-t theme-border flex items-center justify-between gap-3">
+          <button
+            id="prevSurahBtn"
+            type="button"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-xl theme-surface border text-xs sm:text-sm font-bold hover:border-emerald-500 transition disabled:opacity-40 disabled:pointer-events-none"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+            <span id="prevSurahLabel">السورة السابقة</span>
+          </button>
+
+          <button
+            id="scrollTopBtn"
+            type="button"
+            title="العودة للأعلى"
+            class="p-2.5 rounded-xl theme-surface border hover:border-emerald-500 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+            </svg>
+          </button>
+
+          <button
+            id="nextSurahBtn"
+            type="button"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-xl theme-surface border text-xs sm:text-sm font-bold hover:border-emerald-500 transition disabled:opacity-40 disabled:pointer-events-none"
+          >
+            <span id="nextSurahLabel">السورة التالية</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       3. نافذة دليل ألوان التجويد (Modal)
+       ======================================================================== -->
+  <div
+    id="tajweedModal"
+    class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tajweedModalTitle"
+  >
+    <div class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl theme-surface border p-5 sm:p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between gap-3 pb-3 border-b theme-border">
+        <div>
+          <h3 id="tajweedModalTitle" class="text-base sm:text-lg font-extrabold">دليل ألوان مصحف التجويد</h3>
+          <p class="text-xs theme-text-muted mt-0.5">اضغط أو مرّر المؤشر على أي حرف ملون في الآيات لمعرفة حكمه مباشرة</p>
+        </div>
+        <button id="closeTajweedModalBtn" type="button" class="p-2 rounded-xl theme-surface-alt border hover:opacity-80" aria-label="إغلاق">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+        <div class="flex items-start gap-3 p-3 rounded-xl theme-surface-alt">
+          <span class="w-4 h-4 mt-0.5 rounded-full shrink-0 bg-red-600"></span>
+          <div>
+            <div class="font-bold">المد اللازم والمتصل الواجب</div>
+            <div class="text-xs theme-text-muted">يُمد ٤ إلى ٦ حركات (أحمر داكن للازم، أحمر للمتصل).</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-xl theme-surface-alt">
+          <span class="w-4 h-4 mt-0.5 rounded-full shrink-0 bg-amber-500"></span>
+          <div>
+            <div class="font-bold">المد الطبيعي والمنفصل والجائز</div>
+            <div class="text-xs theme-text-muted">المد الطبيعي حركتان، والجائز/العارض للسكون ٢-٤-٦ حركات.</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-xl theme-surface-alt">
+          <span class="w-4 h-4 mt-0.5 rounded-full shrink-0 bg-sky-500"></span>
+          <div>
+            <div class="font-bold">القلقلة</div>
+            <div class="text-xs theme-text-muted">اضطراب الصوت عند النطق بأحد حروف (ق ط ب ج د) الساكنة.</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-xl theme-surface-alt">
+          <span class="w-4 h-4 mt-0.5 rounded-full shrink-0 bg-emerald-500"></span>
+          <div>
+            <div class="font-bold">الغنة والإدغام بغنة والإخفاء</div>
+            <div class="text-xs theme-text-muted">صوت يخرج من الخيشوم بمقدار حركتين (درجات الأخضر والفيروزي).</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-xl theme-surface-alt">
+          <span class="w-4 h-4 mt-0.5 rounded-full shrink-0 bg-purple-500"></span>
+          <div>
+            <div class="font-bold">الإقلاب والإدغام بلا غنة</div>
+            <div class="text-xs theme-text-muted">قلب النون الساكنة ميماً عند الباء، أو إدغامها بغير غنة (درجات البنفسجي).</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-xl theme-surface-alt">
+          <span class="w-4 h-4 mt-0.5 rounded-full shrink-0 bg-slate-400"></span>
+          <div>
+            <div class="font-bold">حروف لا تُنطق</div>
+            <div class="text-xs theme-text-muted">همزة الوصل واللام الشمسية والحروف الساقطة في الوصل (رمادي).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. مشغّل الصوت المثبت في الأسفل (Sticky Audio Player)
+       ======================================================================== -->
+  <footer
+    id="audioPlayerBar"
+    style="background-color: var(--player-bg);"
+    class="fixed bottom-0 inset-x-0 z-40 border-t theme-border backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.12)]"
+  >
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5">
+      <!-- شريط التقدم الزمني -->
+      <div class="flex items-center gap-2 mb-2">
+        <span id="audioCurrentTime" class="text-[11px] font-mono theme-text-muted w-9 text-center shrink-0">0:00</span>
+        <input
+          id="audioSeekBar"
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          step="0.1"
+          class="quran-range flex-1 min-w-0"
+          aria-label="شريط تقدم التلاوة"
+        />
+        <span id="audioDuration" class="text-[11px] font-mono theme-text-muted w-9 text-center shrink-0">0:00</span>
+      </div>
+
+      <!-- عناصر التحكم والمعلومات -->
+      <div class="flex items-center justify-between gap-2 sm:gap-4">
+
+        <!-- القارئ ومعلومات الآية -->
+        <div class="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-initial">
+          <div class="min-w-0 hidden md:block">
+            <div id="playerSurahTitle" class="text-xs font-bold truncate">سورة الفاتحة</div>
+            <div id="playerAyahInfo" class="text-[11px] theme-text-muted truncate">الآية ١</div>
+          </div>
+
+          <select
+            id="reciterSelect"
+            aria-label="اختر القارئ"
+            class="text-xs font-semibold rounded-xl theme-surface-alt border px-2 py-1.5 w-full max-w-[150px] sm:max-w-[205px] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+          >
+            <option value="ar.alafasy">مشاري راشد العفاسي</option>
+            <option value="ar.husary">محمود خليل الحصري</option>
+            <option value="ar.minshawi">محمد صديق المنشاوي</option>
+            <option value="ar.abdulbasitmurattal">عبد الباسط عبد الصمد</option>
+            <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+            <option value="ar.abdurrahmaansudais">عبد الرحمن السديس</option>
+          </select>
+        </div>
+
+        <!-- أزرار التشغيل الأساسية -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button
+            id="prevAyahBtn"
+            type="button"
+            title="الآية السابقة"
+            class="p-2 rounded-xl theme-surface-alt border hover:opacity-80 transition"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18V6h2v12H6zm3.5-6L18 6v12l-8.5-6z" transform="scale(-1,1) translate(-24,0)" />
+            </svg>
+          </button>
+
+          <button
+            id="playPauseBtn"
+            type="button"
+            title="تشغيل / إيقاف مؤقت"
+            class="w-10 h-10 rounded-full theme-accent-bg flex items-center justify-center shadow-md hover:scale-105 transition"
+          >
+            <svg id="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5.14v14l11-7-11-7z" />
+            </svg>
+            <svg id="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+            <svg id="audioSpinner" class="w-5 h-5 hidden animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </button>
+
+          <button
+            id="nextAyahBtn"
+            type="button"
+            title="الآية التالية"
+            class="p-2 rounded-xl theme-surface-alt border hover:opacity-80 transition"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18V6h2v12H6zm3.5-6L18 6v12l-8.5-6z" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- تكرار الآية + السرعة -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button
+            id="repeatAyahBtn"
+            type="button"
+            title="تكرار الآية الحالية"
+            class="p-2 rounded-xl theme-surface-alt border transition text-xs font-bold flex items-center gap-1"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+            </svg>
+            <span class="hidden xl:inline">تكرار</span>
+          </button>
+
+          <select
+            id="speedSelect"
+            aria-label="سرعة التلاوة"
+            class="text-xs font-bold rounded-xl theme-surface-alt border px-2 py-1.5 focus:outline-none"
+          >
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- حاوية الإشعارات المنبثقة (Toast) -->
+  <div id="toastContainer" class="fixed bottom-28 left-4 z-[70] flex flex-col gap-2 pointer-events-none max-w-[90vw]"></div>
+
+  <!-- عنصر الصوت -->
+  <audio id="quranAudio" preload="auto"></audio>
+
+  <!-- ========================================================================
+       5. المنطق البرمجي الكامل للتطبيق (JavaScript)
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      const API_BASE = 'https://api.alquran.cloud/v1';
+
+      const STORAGE_KEYS = {
+        THEME: 'quran_app_theme_v2',
+        FONT_SIZE: 'quran_app_font_size',
+        VIEW_MODE: 'quran_app_view_mode',
+        RECITER: 'quran_app_reciter',
+        LAST_READ: 'quran_app_last_read',
+        BOOKMARKS: 'quran_app_bookmarks',
+        TAJWEED: 'quran_app_tajweed'
+      };
+
+      // خريطة أحكام التجويد الكاملة لنسخة quran-tajweed
+      const TAJWEED_RULES = {
+        h: { cls: 'tj-silent', label: 'همزة وصل (لا تُنطق عند الوصل)' },
+        l: { cls: 'tj-silent', label: 'لام شمسية (تُدغم ولا تُنطق)' },
+        s: { cls: 'tj-silent', label: 'حرف لا يُنطق' },
+        n: { cls: 'tj-madd-normal', label: 'مد طبيعي (حركتان)' },
+        p: { cls: 'tj-madd-permissible', label: 'مد جائز / عارض للسكون (٢-٤-٦ حركات)' },
+        o: { cls: 'tj-madd-obligatory', label: 'مد متصل واجب (٤-٥ حركات)' },
+        m: { cls: 'tj-madd-necessary', label: 'مد لازم (٦ حركات)' },
+        q: { cls: 'tj-qalqalah', label: 'قلقلة' },
+        g: { cls: 'tj-ghunnah', label: 'غنة (حركتان)' },
+        f: { cls: 'tj-ikhfa', label: 'إخفاء حقيقي' },
+        c: { cls: 'tj-ikhfa', label: 'إخفاء شفوي' },
+        i: { cls: 'tj-iqlab', label: 'إقلاب' },
+        a: { cls: 'tj-idgham-ghunnah', label: 'إدغام بغنة' },
+        w: { cls: 'tj-idgham-ghunnah', label: 'إدغام شفوي بغنة' },
+        u: { cls: 'tj-idgham-no-ghunnah', label: 'إدغام بلا غنة' },
+        d: { cls: 'tj-idgham-no-ghunnah', label: 'إدغام متجانسين' },
+        b: { cls: 'tj-idgham-no-ghunnah', label: 'إدغام متقاربين' }
+      };
+
+      // قاموس الفروق الإملائية بين الرسم العثماني والإملاء القياسي للمقارنة الدقيقة في التسميع
+      const UTHMANI_TO_STANDARD = {
+        'الصلوه': 'الصلاه',
+        'الزكوه': 'الزكاه',
+        'الحيوه': 'الحياه',
+        'الربوا': 'الربا',
+        'الغدوه': 'الغداه',
+        'مشكوه': 'مشكاه',
+        'النجوه': 'النجاه',
+        'منوه': 'مناه',
+        'الرحمن': 'الرحمان',
+        'العلمين': 'العالمين',
+        'ملك': 'مالك',
+        'السموت': 'السماوات',
+        'السموات': 'السماوات',
+        'اوليك': 'اولئك',
+        'الشيطن': 'الشيطان',
+        'ابرهيم': 'ابراهيم',
+        'اسمعيل': 'اسماعيل',
+        'اسحق': 'اسحاق',
+        'سليمن': 'سليمان',
+        'لقمن': 'لقمان',
+        'عمرن': 'عمران',
+        'هرون': 'هارون',
+        'قرون': 'قارون',
+        'ذالك': 'ذلك',
+        'لاكن': 'لكن',
+        'هاذا': 'هذا',
+        'هاذه': 'هذه',
+        'هاولاء': 'هولاء',
+        'الاه': 'اله'
+      };
+
+      const BASMALAH_PREFIX_REGEX = /^بِسْمِ\s+[ٱا]للَّهِ\s+[ٱا]لرَّحْمَ[ٰـ]*نِ\s+[ٱا]لرَّحِيمِ\s*/u;
+
+      const state = {
+        surahs: [],
+        filteredSurahs: [],
+        currentSurahNumber: 1,
+        currentSurahMeta: null,
+        ayahs: [],
+        activeAyahIndex: 0,
+        isPlaying: false,
+        repeatAyah: false,
+        reciter: localStorage.getItem(STORAGE_KEYS.RECITER) || 'ar.alafasy',
+        theme: localStorage.getItem(STORAGE_KEYS.THEME) || 'dark',
+        fontSize: parseInt(localStorage.getItem(STORAGE_KEYS.FONT_SIZE), 10) || 32,
+        viewMode: localStorage.getItem(STORAGE_KEYS.VIEW_MODE) || 'verse',
+        tajweedEnabled: localStorage.getItem(STORAGE_KEYS.TAJWEED) === 'true',
+        showAllTafsir: false,
+        openTafsirSet: new Set(),
+        bookmarks: loadJSON(STORAGE_KEYS.BOOKMARKS, []),
+        lastRead: loadJSON(STORAGE_KEYS.LAST_READ, null),
+        activeSidebarTab: 'surahs',
+        mem: {
+          fromAyah: 1,
+          toAyah: 5,
+          words: [],
+          currentWordIdx: 0,
+          correctCount: 0,
+          wrongCount: 0,
+          streak: 0,
+          peekAll: false,
+          isRecording: false,
+          recognition: null
+        }
+      };
+
+      const els = {
+        sidebar: document.getElementById('sidebar'),
+        sidebarOverlay: document.getElementById('sidebarOverlay'),
+        mobileSidebarBtn: document.getElementById('mobileSidebarBtn'),
+        closeSidebarBtn: document.getElementById('closeSidebarBtn'),
+        brandLogoBtn: document.getElementById('brandLogoBtn'),
+
+        modeVerseBtn: document.getElementById('modeVerseBtn'),
+        modeMushafBtn: document.getElementById('modeMushafBtn'),
+        modeMemorizeBtn: document.getElementById('modeMemorizeBtn'),
+        fontDecreaseBtn: document.getElementById('fontDecreaseBtn'),
+        fontIncreaseBtn: document.getElementById('fontIncreaseBtn'),
+        fontSizeLabel: document.getElementById('fontSizeLabel'),
+        mobileThemeCycleBtn: document.getElementById('mobileThemeCycleBtn'),
+        mobileThemeIcon: document.getElementById('mobileThemeIcon'),
+        themeButtons: document.querySelectorAll('[data-theme-btn]'),
+
+        lastReadContainer: document.getElementById('lastReadContainer'),
+        lastReadBtn: document.getElementById('lastReadBtn'),
+        lastReadText: document.getElementById('lastReadText'),
+        tabSurahsBtn: document.getElementById('tabSurahsBtn'),
+        tabBookmarksBtn: document.getElementById('tabBookmarksBtn'),
+        bookmarksCountBadge: document.getElementById('bookmarksCountBadge'),
+        surahSearchWrap: document.getElementById('surahSearchWrap'),
+        surahSearchInput: document.getElementById('surahSearchInput'),
+        surahListContainer: document.getElementById('surahListContainer'),
+        bookmarksListContainer: document.getElementById('bookmarksListContainer'),
+
+        bannerSurahNumber: document.getElementById('bannerSurahNumber'),
+        bannerRevelationType: document.getElementById('bannerRevelationType'),
+        bannerAyahCount: document.getElementById('bannerAyahCount'),
+        bannerSurahName: document.getElementById('bannerSurahName'),
+        bannerEnglishName: document.getElementById('bannerEnglishName'),
+        playFullSurahBtn: document.getElementById('playFullSurahBtn'),
+        toggleAllTafsirBtn: document.getElementById('toggleAllTafsirBtn'),
+        toggleAllTafsirLabel: document.getElementById('toggleAllTafsirLabel'),
+        toggleTajweedBtn: document.getElementById('toggleTajweedBtn'),
+        toggleTajweedLabel: document.getElementById('toggleTajweedLabel'),
+        openTajweedModalBtn: document.getElementById('openTajweedModalBtn'),
+        tajweedModal: document.getElementById('tajweedModal'),
+        closeTajweedModalBtn: document.getElementById('closeTajweedModalBtn'),
+        basmalahBlock: document.getElementById('basmalahBlock'),
+
+        readerLoading: document.getElementById('readerLoading'),
+        readerError: document.getElementById('readerError'),
+        readerErrorMsg: document.getElementById('readerErrorMsg'),
+        retryLoadBtn: document.getElementById('retryLoadBtn'),
+        ayahsContainer: document.getElementById('ayahsContainer'),
+
+        memorizationSection: document.getElementById('memorizationSection'),
+        memFromAyah: document.getElementById('memFromAyah'),
+        memToAyah: document.getElementById('memToAyah'),
+        memFullSurahRangeBtn: document.getElementById('memFullSurahRangeBtn'),
+        memToggleRevealBtn: document.getElementById('memToggleRevealBtn'),
+        memStreakCount: document.getElementById('memStreakCount'),
+        memWrongCount: document.getElementById('memWrongCount'),
+        memAccuracy: document.getElementById('memAccuracy'),
+        memProgressLabel: document.getElementById('memProgressLabel'),
+        memProgressPercent: document.getElementById('memProgressPercent'),
+        memProgressBar: document.getElementById('memProgressBar'),
+        memMicBtn: document.getElementById('memMicBtn'),
+        memMicBtnText: document.getElementById('memMicBtnText'),
+        memStatusLine: document.getElementById('memStatusLine'),
+        memLiveTranscriptBox: document.getElementById('memLiveTranscriptBox'),
+        memLiveTranscriptText: document.getElementById('memLiveTranscriptText'),
+        memCurrentAyahBadge: document.getElementById('memCurrentAyahBadge'),
+        memFeedbackBanner: document.getElementById('memFeedbackBanner'),
+        memHintBtn: document.getElementById('memHintBtn'),
+        memSkipBtn: document.getElementById('memSkipBtn'),
+        memHearAyahBtn: document.getElementById('memHearAyahBtn'),
+        memRestartBtn: document.getElementById('memRestartBtn'),
+        memMicFallbackNotice: document.getElementById('memMicFallbackNotice'),
+        memTypingForm: document.getElementById('memTypingForm'),
+        memTypingInput: document.getElementById('memTypingInput'),
+        memWordsContainer: document.getElementById('memWordsContainer'),
+
+        mushafTafsirBar: document.getElementById('mushafTafsirBar'),
+        mushafTafsirBadge: document.getElementById('mushafTafsirBadge'),
+        mushafTafsirText: document.getElementById('mushafTafsirText'),
+        closeMushafTafsirBtn: document.getElementById('closeMushafTafsirBtn'),
+
+        prevSurahBtn: document.getElementById('prevSurahBtn'),
+        nextSurahBtn: document.getElementById('nextSurahBtn'),
+        prevSurahLabel: document.getElementById('prevSurahLabel'),
+        nextSurahLabel: document.getElementById('nextSurahLabel'),
+        scrollTopBtn: document.getElementById('scrollTopBtn'),
+
+        audio: document.getElementById('quranAudio'),
+        audioCurrentTime: document.getElementById('audioCurrentTime'),
+        audioDuration: document.getElementById('audioDuration'),
+        audioSeekBar: document.getElementById('audioSeekBar'),
+        playerSurahTitle: document.getElementById('playerSurahTitle'),
+        playerAyahInfo: document.getElementById('playerAyahInfo'),
+        reciterSelect: document.getElementById('reciterSelect'),
+        prevAyahBtn: document.getElementById('prevAyahBtn'),
+        playPauseBtn: document.getElementById('playPauseBtn'),
+        nextAyahBtn: document.getElementById('nextAyahBtn'),
+        playIcon: document.getElementById('playIcon'),
+        pauseIcon: document.getElementById('pauseIcon'),
+        audioSpinner: document.getElementById('audioSpinner'),
+        repeatAyahBtn: document.getElementById('repeatAyahBtn'),
+        speedSelect: document.getElementById('speedSelect'),
+        toastContainer: document.getElementById('toastContainer')
+      };
+
+      /* ----------------------------------------------------------------------
+         دوال مساعدة أساسية
+         ---------------------------------------------------------------------- */
+      function loadJSON(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      }
+
+      // تحويل جميع روابط الصوت إلى HTTPS لضمان العمل على GitHub Pages بدون Mixed Content
+      function toHttpsUrl(url) {
+        return (url || '').replace(/^http:\/\//i, 'https://');
+      }
+
+      function toArabicDigits(num) {
+        const arabicNums = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        return String(num).replace(/\d/g, (d) => arabicNums[Number(d)]);
+      }
+
+      function normalizeArabic(text) {
+        return (text || '')
+          .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+          .replace(/[أإآٱ]/g, 'ا')
+          .replace(/ة/g, 'ه')
+          .replace(/ى/g, 'ي')
+          .toLowerCase()
+          .trim();
+      }
+
+      function escapeHtml(str) {
+        return (str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      // إزالة البسملة من نص التجويد للسور 2-114 عدا التوبة دون كسر أي وسوم
+      function stripBasmalahFromTajweed(rawTajweed) {
+        const tokens = (rawTajweed || '').trim().split(/\s+/);
+        if (tokens.length > 4) {
+          const firstFourPlain = tokens
+            .slice(0, 4)
+            .join(' ')
+            .replace(/\[[a-z](?::\d+)?\[/gi, '')
+            .replace(/[\[\]]/g, '');
+          if (normalizeArabic(firstFourPlain) === 'بسم الله الرحمن الرحيم') {
+            return tokens.slice(4).join(' ').trim();
+          }
+        }
+        return rawTajweed;
+      }
+
+      // محلل وسوم التجويد المضمون (يضمن عدم ظهور أي قوس [ أو ] أبداً)
+      function parseTajweedHtml(rawTajweed) {
+        if (!rawTajweed) return '';
+        let html = escapeHtml(rawTajweed);
+        const tagRegex = /\[([a-z])(?::\d+)?\[([^\[\]]*)\]\]?/gi;
+        let prev;
+        let guard = 0;
+
+        do {
+          prev = html;
+          html = html.replace(tagRegex, (match, code, content) => {
+            const rule = TAJWEED_RULES[code.toLowerCase()];
+            if (!rule) return content;
+            return `<span class="tj-rule ${rule.cls}" data-rule="${rule.label}" title="${rule.label}">${content}</span>`;
+          });
+          guard++;
+        } while (html !== prev && guard < 12);
+
+        // تنظيف وقائي لأي أقواس متبقية
+        html = html.replace(/\[[a-z](?::\d+)?\[/gi, '').replace(/[\[\]]/g, '');
+        return html;
+      }
+
+      function formatTime(seconds) {
+        if (!isFinite(seconds) || seconds < 0) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      }
+
+      function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-enter pointer-events-auto px-4 py-2.5 rounded-xl theme-accent-bg text-xs sm:text-sm font-bold shadow-lg flex items-center gap-2';
+        toast.innerHTML = `
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+          <span>${escapeHtml(message)}</span>
+        `;
+        els.toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.25s ease';
+          setTimeout(() => toast.remove(), 260);
+        }, 2500);
+      }
+
+      function copyTextToClipboard(text) {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.top = '-9999px';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          showToast('تم نسخ الآية بنجاح');
+        } catch (err) {
+          showToast('تعذر نسخ النص');
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         إدارة السمة وحجم الخط ووضع العرض والتجويد
+         ---------------------------------------------------------------------- */
+      function applyTheme(theme) {
+        state.theme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEYS.THEME, theme);
+
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) {
+          themeMeta.setAttribute('content', theme === 'dark' ? '#090f1d' : theme === 'sepia' ? '#f2e8d5' : '#f6f9fc');
+        }
+
+        els.themeButtons.forEach((btn) => {
+          const isSelected = btn.getAttribute('data-theme-btn') === theme;
+          btn.classList.toggle('theme-accent-bg', isSelected);
+          btn.classList.toggle('shadow-sm', isSelected);
+        });
+
+        // تحديث أيقونة السمة على الجوال
+        if (theme === 'light') {
+          els.mobileThemeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />';
+        } else if (theme === 'sepia') {
+          els.mobileThemeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />';
+        } else {
+          els.mobileThemeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />';
+        }
+      }
+
+      function applyFontSize(size) {
+        const clamped = Math.max(22, Math.min(52, size));
+        state.fontSize = clamped;
+        localStorage.setItem(STORAGE_KEYS.FONT_SIZE, String(clamped));
+        els.fontSizeLabel.textContent = clamped;
+
+        document.querySelectorAll('.quran-text-scalable').forEach((el) => {
+          el.style.fontSize = `${clamped}px`;
+        });
+      }
+
+      function applyViewMode(mode) {
+        state.viewMode = mode;
+        localStorage.setItem(STORAGE_KEYS.VIEW_MODE, mode);
+
+        const isVerse = mode === 'verse';
+        const isMushaf = mode === 'mushaf';
+        const isMemorize = mode === 'memorize';
+
+        els.modeVerseBtn.classList.toggle('theme-accent-bg', isVerse);
+        els.modeVerseBtn.classList.toggle('shadow-sm', isVerse);
+        els.modeMushafBtn.classList.toggle('theme-accent-bg', isMushaf);
+        els.modeMushafBtn.classList.toggle('shadow-sm', isMushaf);
+        els.modeMemorizeBtn.classList.toggle('theme-accent-bg', isMemorize);
+        els.modeMemorizeBtn.classList.toggle('shadow-sm', isMemorize);
+
+        if (!isMemorize && state.mem.isRecording) {
+          stopVoiceRecitation();
+        }
+
+        els.toggleAllTafsirBtn.classList.toggle('hidden', !isVerse);
+        els.toggleTajweedBtn.classList.toggle('hidden', isMemorize);
+        els.openTajweedModalBtn.classList.toggle('hidden', isMemorize || !state.tajweedEnabled);
+
+        els.ayahsContainer.classList.toggle('hidden', isMemorize);
+        els.memorizationSection.classList.toggle('hidden', !isMemorize);
+
+        if (!isMushaf) {
+          els.mushafTafsirBar.classList.add('hidden');
+        }
+
+        if (state.ayahs.length > 0) {
+          if (isMemorize) {
+            setupMemorizationForCurrentSurah();
+          } else {
+            renderAyahs();
+            highlightActiveAyah(false);
+          }
+        }
+      }
+
+      function applyTajweedUI() {
+        localStorage.setItem(STORAGE_KEYS.TAJWEED, String(state.tajweedEnabled));
+        els.toggleTajweedBtn.classList.toggle('theme-accent-bg', state.tajweedEnabled);
+        els.toggleTajweedLabel.textContent = state.tajweedEnabled ? 'التجويد الملون: مفعل' : 'التجويد الملون';
+        els.openTajweedModalBtn.classList.toggle('hidden', !state.tajweedEnabled || state.viewMode === 'memorize');
+
+        if (state.ayahs.length > 0 && state.viewMode !== 'memorize') {
+          renderAyahs();
+          highlightActiveAyah(false);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         إدارة الدرج الجانبي والمحفوظات وآخر قراءة
+         ---------------------------------------------------------------------- */
+      function openSidebar() {
+        els.sidebar.classList.remove('translate-x-full');
+        els.sidebarOverlay.classList.remove('hidden');
+      }
+
+      function closeSidebar() {
+        els.sidebar.classList.add('translate-x-full');
+        els.sidebarOverlay.classList.add('hidden');
+      }
+
+      function switchSidebarTab(tab) {
+        state.activeSidebarTab = tab;
+        const isSurahs = tab === 'surahs';
+        els.tabSurahsBtn.classList.toggle('theme-accent-bg', isSurahs);
+        els.tabBookmarksBtn.classList.toggle('theme-accent-bg', !isSurahs);
+        els.surahSearchWrap.classList.toggle('hidden', !isSurahs);
+        els.surahListContainer.classList.toggle('hidden', !isSurahs);
+        els.bookmarksListContainer.classList.toggle('hidden', isSurahs);
+
+        if (!isSurahs) renderBookmarksList();
+      }
+
+      function updateLastRead(surahNumber, surahName, ayahNumberInSurah) {
+        state.lastRead = { surahNumber, surahName, ayahNumberInSurah };
+        localStorage.setItem(STORAGE_KEYS.LAST_READ, JSON.stringify(state.lastRead));
+        renderLastReadCard();
+      }
+
+      function renderLastReadCard() {
+        if (!state.lastRead) {
+          els.lastReadContainer.classList.add('hidden');
+          return;
+        }
+        els.lastReadContainer.classList.remove('hidden');
+        els.lastReadText.textContent = `${state.lastRead.surahName} • الآية ${toArabicDigits(state.lastRead.ayahNumberInSurah)}`;
+      }
+
+      function isBookmarked(surahNumber, ayahNumberInSurah) {
+        return state.bookmarks.some(
+          (b) => b.surahNumber === surahNumber && b.ayahNumberInSurah === ayahNumberInSurah
+        );
+      }
+
+      function toggleBookmark(ayah) {
+        const surahNum = state.currentSurahNumber;
+        const surahName = state.currentSurahMeta ? state.currentSurahMeta.name : '';
+        const idx = state.bookmarks.findIndex(
+          (b) => b.surahNumber === surahNum && b.ayahNumberInSurah === ayah.numberInSurah
+        );
+
+        if (idx > -1) {
+          state.bookmarks.splice(idx, 1);
+          showToast('تمت الإزالة من المحفوظات');
+        } else {
+          state.bookmarks.unshift({
+            surahNumber: surahNum,
+            surahName,
+            ayahNumberInSurah: ayah.numberInSurah,
+            textSnippet: ayah.displayText.slice(0, 75) + (ayah.displayText.length > 75 ? '...' : '')
+          });
+          showToast('تمت الإضافة إلى المحفوظات');
+        }
+
+        localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(state.bookmarks));
+        updateBookmarksBadge();
+
+        const btn = document.querySelector(`[data-bookmark-ayah="${ayah.numberInSurah}"]`);
+        if (btn) {
+          const saved = isBookmarked(surahNum, ayah.numberInSurah);
+          btn.classList.toggle('theme-accent-text', saved);
+          const svg = btn.querySelector('svg');
+          if (svg) svg.setAttribute('fill', saved ? 'currentColor' : 'none');
+        }
+
+        if (state.activeSidebarTab === 'bookmarks') renderBookmarksList();
+      }
+
+      function updateBookmarksBadge() {
+        els.bookmarksCountBadge.textContent = toArabicDigits(state.bookmarks.length);
+      }
+
+      function renderBookmarksList() {
+        if (state.bookmarks.length === 0) {
+          els.bookmarksListContainer.innerHTML = `
+            <div class="text-center py-10 px-4 theme-text-muted text-sm space-y-2">
+              <p class="font-bold">لا توجد آيات محفوظة بعد</p>
+              <p class="text-xs">اضغط على أيقونة الحفظ بجانب أي آية للرجوع إليها لاحقاً.</p>
+            </div>
+          `;
+          return;
+        }
+
+        els.bookmarksListContainer.innerHTML = state.bookmarks
+          .map(
+            (b, i) => `
+            <div class="p-3 rounded-xl theme-surface-alt border hover:border-emerald-500 transition">
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <button type="button" data-goto-bookmark="${i}" class="text-xs font-bold theme-accent-text hover:underline">
+                  ${escapeHtml(b.surahName)} • آية ${toArabicDigits(b.ayahNumberInSurah)}
+                </button>
+                <button type="button" data-remove-bookmark="${i}" title="حذف" class="p-1 rounded-lg text-red-500/80 hover:bg-red-500/10">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p data-goto-bookmark="${i}" class="font-quran text-base leading-loose cursor-pointer line-clamp-2">
+                ${escapeHtml(b.textSnippet)}
+              </p>
+            </div>
+          `
+          )
+          .join('');
+      }
+
+      /* ----------------------------------------------------------------------
+         جلب فهرس السور وبيانات السورة من AlQuran Cloud API (HTTPS)
+         ---------------------------------------------------------------------- */
+      async function fetchSurahList() {
+        els.surahListContainer.innerHTML = Array.from({ length: 10 })
+          .map(
+            () => `
+            <div class="p-3 rounded-xl theme-surface-alt animate-pulse flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-slate-400/20"></div>
+              <div class="flex-1 space-y-1.5">
+                <div class="h-3.5 w-24 rounded bg-slate-400/20"></div>
+                <div class="h-2.5 w-16 rounded bg-slate-400/15"></div>
+              </div>
+            </div>
+          `
+          )
+          .join('');
+
+        try {
+          const response = await fetch(`${API_BASE}/surah`);
+          if (!response.ok) throw new Error('فشل الاتصال بالخادم');
+          const json = await response.json();
+          if (json.code !== 200 || !Array.isArray(json.data)) throw new Error('بيانات غير صالحة');
+
+          state.surahs = json.data;
+          state.filteredSurahs = json.data;
+          renderSurahList();
+          updateSurahFooterNav();
+        } catch (err) {
+          els.surahListContainer.innerHTML = `
+            <div class="p-5 text-center space-y-3">
+              <p class="text-xs theme-text-secondary">تعذر تحميل فهرس السور</p>
+              <button id="retrySurahListBtn" type="button" class="px-3.5 py-1.5 rounded-lg theme-accent-bg text-xs font-bold">إعادة المحاولة</button>
+            </div>
+          `;
+          const retryBtn = document.getElementById('retrySurahListBtn');
+          if (retryBtn) retryBtn.addEventListener('click', fetchSurahList);
+        }
+      }
+
+      function renderSurahList() {
+        if (state.filteredSurahs.length === 0) {
+          els.surahListContainer.innerHTML = '<div class="text-center py-8 text-xs theme-text-muted">لا توجد سورة مطابقة للبحث</div>';
+          return;
+        }
+
+        els.surahListContainer.innerHTML = state.filteredSurahs
+          .map((surah) => {
+            const isActive = surah.number === state.currentSurahNumber;
+            const revType = surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية';
+            return `
+              <button
+                type="button"
+                data-surah-num="${surah.number}"
+                class="w-full text-right p-2.5 rounded-xl flex items-center justify-between gap-2.5 transition border ${
+                  isActive
+                    ? 'surah-item-active theme-accent-soft border-emerald-500/40'
+                    : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5'
+                }"
+              >
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="surah-badge shrink-0">
+                    <span>${toArabicDigits(surah.number)}</span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-amiri text-lg font-bold leading-snug truncate">${escapeHtml(surah.name)}</div>
+                    <div class="text-[11px] theme-text-muted flex items-center gap-1.5">
+                      <span>${revType}</span>
+                      <span>•</span>
+                      <span>${toArabicDigits(surah.numberOfAyahs)} آية</span>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-[11px] font-medium theme-text-muted shrink-0 hidden sm:inline">${escapeHtml(surah.englishName)}</span>
+              </button>
+            `;
+          })
+          .join('');
+      }
+
+      async function loadSurah(surahNumber, options = {}) {
+        const { targetAyahNumber = 1, autoPlay = false, scrollToTop = true } = options;
+        if (surahNumber < 1 || surahNumber > 114) return;
+
+        stopAudioPlayback();
+        if (state.mem.isRecording) stopVoiceRecitation();
+
+        state.currentSurahNumber = surahNumber;
+        state.openTafsirSet.clear();
+        state.showAllTafsir = false;
+        els.toggleAllTafsirLabel.textContent = 'إظهار التفسير للكل';
+        els.mushafTafsirBar.classList.add('hidden');
+
+        els.readerError.classList.add('hidden');
+        els.ayahsContainer.innerHTML = '';
+        els.basmalahBlock.classList.add('hidden');
+        els.readerLoading.classList.remove('hidden');
+
+        renderSurahList();
+        updateSurahFooterNav();
+
+        if (scrollToTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        try {
+          const url = `${API_BASE}/surah/${surahNumber}/editions/quran-uthmani,${state.reciter},ar.muyassar,quran-tajweed`;
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`خطأ في الاتصال (${response.status})`);
+
+          const json = await response.json();
+          if (json.code !== 200 || !Array.isArray(json.data) || json.data.length < 3) {
+            throw new Error('لم يتم استلام بيانات السورة بشكل مكتمل');
+          }
+
+          const [uthmaniEdition, audioEdition, tafsirEdition, tajweedEdition] = json.data;
+
+          state.currentSurahMeta = {
+            number: uthmaniEdition.number,
+            name: uthmaniEdition.name,
+            englishName: uthmaniEdition.englishName,
+            englishNameTranslation: uthmaniEdition.englishNameTranslation,
+            revelationType: uthmaniEdition.revelationType,
+            numberOfAyahs: uthmaniEdition.numberOfAyahs
+          };
+
+          state.ayahs = uthmaniEdition.ayahs.map((ayah, index) => {
+            let cleanText = ayah.text;
+            let rawTajweed = tajweedEdition?.ayahs?.[index]?.text || ayah.text;
+
+            if (surahNumber !== 1 && surahNumber !== 9 && ayah.numberInSurah === 1) {
+              const stripped = cleanText.replace(BASMALAH_PREFIX_REGEX, '').trim();
+              if (stripped.length > 0) cleanText = stripped;
+              const strippedTj = stripBasmalahFromTajweed(rawTajweed);
+              if (strippedTj.length > 0) rawTajweed = strippedTj;
+            }
+
+            return {
+              globalNumber: ayah.number,
+              numberInSurah: ayah.numberInSurah,
+              displayText: cleanText,
+              tajweedHtml: parseTajweedHtml(rawTajweed),
+              audioUrl: toHttpsUrl(audioEdition.ayahs[index]?.audio || ''),
+              tafsir: tafsirEdition.ayahs[index]?.text || 'لا يتوفر تفسير لهذه الآية.',
+              juz: ayah.juz
+            };
+          });
+
+          renderSurahBanner();
+          els.readerLoading.classList.add('hidden');
+
+          if (state.viewMode === 'memorize') {
+            setupMemorizationForCurrentSurah();
+          } else {
+            renderAyahs();
+          }
+
+          const targetIdx = Math.max(0, Math.min(state.ayahs.length - 1, targetAyahNumber - 1));
+          state.activeAyahIndex = targetIdx;
+          updatePlayerMeta();
+
+          if (state.viewMode !== 'memorize') {
+            highlightActiveAyah(targetAyahNumber > 1);
+          }
+
+          updateLastRead(
+            state.currentSurahMeta.number,
+            state.currentSurahMeta.name,
+            state.ayahs[targetIdx].numberInSurah
+          );
+
+          if (autoPlay) playAyahByIndex(targetIdx);
+        } catch (error) {
+          els.readerLoading.classList.add('hidden');
+          els.readerError.classList.remove('hidden');
+          els.readerErrorMsg.textContent = error.message || 'يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.';
+        }
+      }
+
+      async function switchReciter(newReciterId) {
+        const wasPlaying = state.isPlaying;
+        const currentIdx = state.activeAyahIndex;
+
+        state.reciter = newReciterId;
+        localStorage.setItem(STORAGE_KEYS.RECITER, newReciterId);
+        if (!state.ayahs.length) return;
+
+        showAudioSpinner(true);
+        try {
+          const response = await fetch(`${API_BASE}/surah/${state.currentSurahNumber}/${newReciterId}`);
+          if (!response.ok) throw new Error('تعذر تحميل تلاوة القارئ');
+          const json = await response.json();
+          if (json.code !== 200 || !json.data?.ayahs) throw new Error('بيانات غير متاحة');
+
+          json.data.ayahs.forEach((a, idx) => {
+            if (state.ayahs[idx]) state.ayahs[idx].audioUrl = toHttpsUrl(a.audio);
+          });
+
+          showToast('تم تغيير القارئ بنجاح');
+          if (wasPlaying) {
+            playAyahByIndex(currentIdx);
+          } else {
+            els.audio.src = state.ayahs[currentIdx]?.audioUrl || '';
+          }
+        } catch (err) {
+          showToast('تعذر تحميل صوت هذا القارئ، حاول مجدداً');
+        } finally {
+          showAudioSpinner(false);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         عرض السورة (آية بآية / وضع المصحف)
+         ---------------------------------------------------------------------- */
+      function renderSurahBanner() {
+        const meta = state.currentSurahMeta;
+        if (!meta) return;
+
+        const revType = meta.revelationType === 'Meccan' ? 'مكية' : 'مدنية';
+        els.bannerSurahNumber.textContent = `السورة ${toArabicDigits(meta.number)}`;
+        els.bannerRevelationType.textContent = revType;
+        els.bannerAyahCount.textContent = `${toArabicDigits(meta.numberOfAyahs)} آية`;
+        els.bannerSurahName.textContent = meta.name;
+        els.bannerEnglishName.textContent = `${meta.englishName} — ${meta.englishNameTranslation}`;
+
+        const showBasmalah = meta.number !== 1 && meta.number !== 9;
+        els.basmalahBlock.classList.toggle('hidden', !showBasmalah);
+      }
+
+      function renderAyahs() {
+        if (state.viewMode === 'mushaf') {
+          renderMushafView();
+        } else {
+          renderVerseByVerseView();
+        }
+      }
+
+      function renderVerseByVerseView() {
+        els.ayahsContainer.className = 'space-y-4';
+        els.ayahsContainer.innerHTML = state.ayahs
+          .map((ayah, idx) => {
+            const saved = isBookmarked(state.currentSurahNumber, ayah.numberInSurah);
+            const isTafsirOpen = state.showAllTafsir || state.openTafsirSet.has(ayah.numberInSurah);
+
+            return `
+              <article id="ayah-el-${idx}" data-ayah-index="${idx}" class="rounded-2xl theme-surface border p-4 sm:p-6 transition-all shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b theme-border">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-1 rounded-lg theme-accent-soft text-xs font-bold">
+                      ${toArabicDigits(state.currentSurahNumber)}:${toArabicDigits(ayah.numberInSurah)}
+                    </span>
+                    <span class="text-[11px] theme-text-muted">الجزء ${toArabicDigits(ayah.juz)}</span>
+                  </div>
+
+                  <div class="flex items-center gap-1 sm:gap-1.5">
+                    <button type="button" data-play-index="${idx}" title="استماع" class="p-2 rounded-xl theme-surface-alt hover:theme-accent-soft transition flex items-center gap-1 text-xs font-semibold">
+                      <svg class="w-4 h-4 theme-accent-text" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z" /></svg>
+                      <span class="hidden sm:inline">استماع</span>
+                    </button>
+
+                    <button type="button" data-tafsir-ayah="${ayah.numberInSurah}" title="التفسير الميسر" class="p-2 rounded-xl theme-surface-alt hover:theme-accent-soft transition flex items-center gap-1 text-xs font-semibold ${isTafsirOpen ? 'theme-accent-soft' : ''}">
+                      <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                      </svg>
+                      <span class="hidden sm:inline">التفسير</span>
+                    </button>
+
+                    <button type="button" data-copy-index="${idx}" title="نسخ الآية" class="p-2 rounded-xl theme-surface-alt hover:opacity-80 transition">
+                      <svg class="w-4 h-4 theme-text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+                      </svg>
+                    </button>
+
+                    <button type="button" data-bookmark-ayah="${ayah.numberInSurah}" data-bookmark-index="${idx}" title="حفظ" class="p-2 rounded-xl theme-surface-alt hover:opacity-80 transition ${saved ? 'theme-accent-text' : 'theme-text-secondary'}">
+                      <svg class="w-4 h-4" fill="${saved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <p class="font-quran quran-text-scalable leading-[2.45] text-right select-text" style="font-size: ${state.fontSize}px;">
+                  ${state.tajweedEnabled ? ayah.tajweedHtml : escapeHtml(ayah.displayText)}
+                  <span class="ayah-end-symbol">﴿${toArabicDigits(ayah.numberInSurah)}﴾</span>
+                </p>
+
+                <div id="tafsir-box-${ayah.numberInSurah}" class="${isTafsirOpen ? '' : 'hidden'} mt-4 pt-4 border-t theme-border">
+                  <div class="rounded-xl theme-surface-alt p-3.5 sm:p-4">
+                    <div class="text-xs font-bold theme-accent-text mb-1.5">التفسير الميسر:</div>
+                    <p class="text-sm sm:text-[15px] leading-relaxed theme-text-secondary">${escapeHtml(ayah.tafsir)}</p>
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join('');
+      }
+
+      function renderMushafView() {
+        els.ayahsContainer.className = '';
+        const spans = state.ayahs
+          .map(
+            (ayah, idx) => `
+            <span id="ayah-el-${idx}" data-mushaf-index="${idx}" class="mushaf-ayah" title="اضغط للاستماع وعرض التفسير">
+              ${state.tajweedEnabled ? ayah.tajweedHtml : escapeHtml(ayah.displayText)}<span class="ayah-end-symbol">﴿${toArabicDigits(ayah.numberInSurah)}﴾</span>
+            </span>
+          `
+          )
+          .join(' ');
+
+        els.ayahsContainer.innerHTML = `
+          <div class="rounded-2xl theme-surface border-2 p-5 sm:p-8 md:p-10 shadow-sm" style="border-color: var(--mushaf-border);">
+            <div class="font-quran quran-text-scalable text-justify leading-[2.6]" style="font-size: ${state.fontSize}px; text-align-last: center;">
+              ${spans}
+            </div>
+            <p class="mt-6 pt-4 border-t theme-border text-center text-xs theme-text-muted">
+              اضغط على أي آية للاستماع إلى تلاوتها وعرض تفسيرها الميسر
+            </p>
+          </div>
+        `;
+      }
+
+      function updateSurahFooterNav() {
+        const current = state.currentSurahNumber;
+        els.prevSurahBtn.disabled = current <= 1;
+        els.nextSurahBtn.disabled = current >= 114;
+
+        const prevSurah = state.surahs.find((s) => s.number === current - 1);
+        const nextSurah = state.surahs.find((s) => s.number === current + 1);
+        els.prevSurahLabel.textContent = prevSurah ? prevSurah.name : 'السورة السابقة';
+        els.nextSurahLabel.textContent = nextSurah ? nextSurah.name : 'السورة التالية';
+      }
+
+      /* ----------------------------------------------------------------------
+         مشغّل الصوت والتتبع التلقائي
+         ---------------------------------------------------------------------- */
+      function showAudioSpinner(loading) {
+        els.audioSpinner.classList.toggle('hidden', !loading);
+        if (loading) {
+          els.playIcon.classList.add('hidden');
+          els.pauseIcon.classList.add('hidden');
+        } else {
+          updatePlayPauseIcons();
+        }
+      }
+
+      function updatePlayPauseIcons() {
+        els.audioSpinner.classList.add('hidden');
+        els.playIcon.classList.toggle('hidden', state.isPlaying);
+        els.pauseIcon.classList.toggle('hidden', !state.isPlaying);
+      }
+
+      function updatePlayerMeta() {
+        const meta = state.currentSurahMeta;
+        const ayah = state.ayahs[state.activeAyahIndex];
+        if (meta && ayah) {
+          els.playerSurahTitle.textContent = meta.name;
+          els.playerAyahInfo.textContent = `الآية ${toArabicDigits(ayah.numberInSurah)} من ${toArabicDigits(meta.numberOfAyahs)}`;
+        }
+      }
+
+      function highlightActiveAyah(shouldScroll = true) {
+        document.querySelectorAll('.ayah-card-active, .mushaf-ayah-active').forEach((el) => {
+          el.classList.remove('ayah-card-active', 'mushaf-ayah-active');
+        });
+        const activeEl = document.getElementById(`ayah-el-${state.activeAyahIndex}`);
+        if (activeEl) {
+          activeEl.classList.add(state.viewMode === 'mushaf' ? 'mushaf-ayah-active' : 'ayah-card-active');
+          if (shouldScroll) activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      function playAyahByIndex(index) {
+        if (!state.ayahs[index]) return;
+        state.activeAyahIndex = index;
+        const ayah = state.ayahs[index];
+
+        updatePlayerMeta();
+        highlightActiveAyah(true);
+
+        if (state.currentSurahMeta) {
+          updateLastRead(state.currentSurahMeta.number, state.currentSurahMeta.name, ayah.numberInSurah);
+        }
+
+        if (state.viewMode === 'mushaf') {
+          els.mushafTafsirBadge.textContent = `التفسير الميسر • آية ${toArabicDigits(ayah.numberInSurah)}`;
+          els.mushafTafsirText.textContent = ayah.tafsir;
+          els.mushafTafsirBar.classList.remove('hidden');
+        }
+
+        if (!ayah.audioUrl) {
+          showToast('ملف الصوت غير متوفر لهذه الآية');
+          return;
+        }
+
+        showAudioSpinner(true);
+        els.audio.src = ayah.audioUrl;
+        els.audio.playbackRate = parseFloat(els.speedSelect.value) || 1;
+
+        els.audio.play()
+          .then(() => {
+            state.isPlaying = true;
+            updatePlayPauseIcons();
+          })
+          .catch(() => {
+            state.isPlaying = false;
+            updatePlayPauseIcons();
+            showToast('اضغط على زر التشغيل لبدء التلاوة');
+          });
+      }
+
+      function togglePlayPause() {
+        if (!state.ayahs.length) return;
+        if (state.isPlaying) {
+          els.audio.pause();
+          state.isPlaying = false;
+          updatePlayPauseIcons();
+        } else {
+          if (!els.audio.src || els.audio.ended) {
+            playAyahByIndex(state.activeAyahIndex);
+          } else {
+            els.audio.play()
+              .then(() => {
+                state.isPlaying = true;
+                updatePlayPauseIcons();
+              })
+              .catch(() => playAyahByIndex(state.activeAyahIndex));
+          }
+        }
+      }
+
+      function stopAudioPlayback() {
+        els.audio.pause();
+        els.audio.currentTime = 0;
+        state.isPlaying = false;
+        updatePlayPauseIcons();
+        els.audioSeekBar.value = 0;
+        els.audioCurrentTime.textContent = '0:00';
+        els.audioDuration.textContent = '0:00';
+      }
+
+      /* ----------------------------------------------------------------------
+         نظام الحفظ والتسميع الصوتي التفاعلي
+         ---------------------------------------------------------------------- */
+      function normalizeForRecitation(word, replaceDaggerWithAlif = false) {
+        let s = word || '';
+        s = replaceDaggerWithAlif ? s.replace(/\u0670/g, 'ا') : s.replace(/\u0670/g, '');
+        const clean = s
+          .replace(/[\u0610-\u061A\u064B-\u065F\u06D6-\u06ED\u0640]/g, '')
+          .replace(/[أإآٱ]/g, 'ا')
+          .replace(/ة/g, 'ه')
+          .replace(/ى/g, 'ي')
+          .replace(/ؤ/g, 'و')
+          .replace(/ئ/g, 'ي')
+          .replace(/ء/g, '')
+          .replace(/[^ابتثجحخدذرزسشصضطظعغفقكلمنهوي]/g, '')
+          .trim();
+        return clean;
+      }
+
+      function levenshteinDistance(a, b) {
+        const m = a.length;
+        const n = b.length;
+        if (m === 0) return n;
+        if (n === 0) return m;
+        const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+        for (let i = 0; i <= m; i++) dp[i][0] = i;
+        for (let j = 0; j <= n; j++) dp[0][j] = j;
+        for (let i = 1; i <= m; i++) {
+          for (let j = 1; j <= n; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+          }
+        }
+        return dp[m][n];
+      }
+
+      function computeSimilarity(a, b) {
+        if (!a || !b) return 0;
+        if (a === b) return 1;
+        return (Math.max(a.length, b.length) - levenshteinDistance(a, b)) / Math.max(a.length, b.length);
+      }
+
+      function isWordMatch(spokenRaw, targetObj) {
+        const spokenBase = normalizeForRecitation(spokenRaw, false);
+        if (!spokenBase) return false;
+
+        const spokenVariants = new Set([spokenBase]);
+        if (UTHMANI_TO_STANDARD[spokenBase]) spokenVariants.add(UTHMANI_TO_STANDARD[spokenBase]);
+
+        const targetVariants = new Set([targetObj.normNoDagger, targetObj.normWithAlif].filter(Boolean));
+        [...targetVariants].forEach((tv) => {
+          if (UTHMANI_TO_STANDARD[tv]) targetVariants.add(UTHMANI_TO_STANDARD[tv]);
+        });
+
+        for (const sv of spokenVariants) {
+          for (const tv of targetVariants) {
+            if (sv === tv) return true;
+            const sim = computeSimilarity(sv, tv);
+            const minLen = Math.min(sv.length, tv.length);
+            if (minLen >= 4 && sim >= 0.68) return true;
+            if (minLen === 3 && sim >= 0.66) return true;
+            if (minLen === 2 && sim >= 0.5 && sv[0] === tv[0]) return true;
+          }
+        }
+        return false;
+      }
+
+      function setupMemorizationForCurrentSurah() {
+        const total = state.ayahs.length;
+        if (!total) return;
+
+        state.mem.fromAyah = 1;
+        state.mem.toAyah = Math.min(5, total);
+
+        const optionsHtml = state.ayahs
+          .map((a) => `<option value="${a.numberInSurah}">${toArabicDigits(a.numberInSurah)}</option>`)
+          .join('');
+
+        els.memFromAyah.innerHTML = optionsHtml;
+        els.memToAyah.innerHTML = optionsHtml;
+        els.memFromAyah.value = String(state.mem.fromAyah);
+        els.memToAyah.value = String(state.mem.toAyah);
+
+        buildMemorizationWords();
+      }
+
+      function buildMemorizationWords() {
+        if (state.mem.isRecording) stopVoiceRecitation();
+
+        const from = Math.min(state.mem.fromAyah, state.mem.toAyah);
+        const to = Math.max(state.mem.fromAyah, state.mem.toAyah);
+        const words = [];
+
+        state.ayahs.forEach((ayah, ayahIdx) => {
+          if (ayah.numberInSurah < from || ayah.numberInSurah > to) return;
+
+          const rawTokens = ayah.displayText.trim().split(/\s+/);
+          const ayahWordIndices = [];
+
+          rawTokens.forEach((tok) => {
+            const norm1 = normalizeForRecitation(tok, false);
+            const norm2 = normalizeForRecitation(tok, true);
+            if (!norm1 && !norm2) {
+              if (ayahWordIndices.length > 0) {
+                words[ayahWordIndices[ayahWordIndices.length - 1]].suffix += ` ${tok}`;
+              }
+              return;
+            }
+            const idx = words.length;
+            words.push({
+              text: tok,
+              suffix: '',
+              isAyahEnd: false,
+              ayahNumber: ayah.numberInSurah,
+              ayahIdx,
+              normNoDagger: norm1,
+              normWithAlif: norm2,
+              status: 'hidden'
+            });
+            ayahWordIndices.push(idx);
+          });
+
+          if (ayahWordIndices.length > 0) {
+            words[ayahWordIndices[ayahWordIndices.length - 1]].isAyahEnd = true;
+          }
+        });
+
+        state.mem.words = words;
+        state.mem.currentWordIdx = 0;
+        state.mem.correctCount = 0;
+        state.mem.wrongCount = 0;
+        state.mem.streak = 0;
+        state.mem.peekAll = false;
+        els.memToggleRevealBtn.textContent = 'إظهار الكلمات';
+
+        els.memFeedbackBanner.classList.add('hidden');
+        els.memLiveTranscriptBox.classList.add('hidden');
+        els.memLiveTranscriptText.textContent = '';
+
+        renderMemorizationWords();
+        updateMemorizationStats();
+      }
+
+      function getMemWordClass(w, idx) {
+        if (w.status === 'correct') return 'mem-word mem-word-correct';
+        if (w.status === 'wrong') return 'mem-word mem-word-wrong';
+        if (w.status === 'hint') return 'mem-word mem-word-hint';
+        if (idx === state.mem.currentWordIdx) {
+          return state.mem.peekAll ? 'mem-word mem-word-current-peek' : 'mem-word mem-word-current';
+        }
+        return state.mem.peekAll ? 'mem-word mem-word-peek' : 'mem-word mem-word-hidden';
+      }
+
+      function renderMemorizationWords() {
+        const words = state.mem.words;
+        if (!words.length) {
+          els.memWordsContainer.innerHTML = '<p class="text-center text-sm theme-text-muted">لا توجد كلمات في هذا النطاق.</p>';
+          return;
+        }
+
+        els.memWordsContainer.style.fontSize = `${state.fontSize}px`;
+        els.memWordsContainer.innerHTML = words
+          .map((w, idx) => {
+            const endBadge = w.isAyahEnd
+              ? `<span class="ayah-end-symbol">﴿${toArabicDigits(w.ayahNumber)}﴾</span>`
+              : '';
+            return `<span id="mem-word-${idx}" class="${getMemWordClass(w, idx)}">${escapeHtml(w.text + w.suffix)}</span>${endBadge}`;
+          })
+          .join(' ');
+      }
+
+      function updateSingleMemWordDOM(idx) {
+        const el = document.getElementById(`mem-word-${idx}`);
+        const w = state.mem.words[idx];
+        if (el && w) el.className = getMemWordClass(w, idx);
+      }
+
+      function updateMemorizationStats() {
+        const total = state.mem.words.length;
+        const done = state.mem.currentWordIdx;
+        const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+        const attempts = state.mem.correctCount + state.mem.wrongCount;
+        const accuracy = attempts > 0 ? Math.round((state.mem.correctCount / attempts) * 100) : 100;
+
+        els.memStreakCount.textContent = toArabicDigits(state.mem.streak);
+        els.memWrongCount.textContent = toArabicDigits(state.mem.wrongCount);
+        els.memAccuracy.textContent = `${toArabicDigits(accuracy)}٪`;
+        els.memProgressLabel.textContent = `التقدم: ${toArabicDigits(done)} / ${toArabicDigits(total)} كلمة`;
+        els.memProgressPercent.textContent = `${toArabicDigits(percent)}٪`;
+        els.memProgressBar.style.width = `${percent}%`;
+
+        const currentWord = state.mem.words[state.mem.currentWordIdx];
+        if (currentWord) {
+          els.memCurrentAyahBadge.textContent = `الآية ${toArabicDigits(currentWord.ayahNumber)}`;
+        }
+      }
+
+      function showMemFeedback(type, message) {
+        els.memFeedbackBanner.className = 'rounded-xl p-3 text-xs sm:text-sm font-bold border ';
+        if (type === 'success') {
+          els.memFeedbackBanner.className += 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30';
+        } else if (type === 'error') {
+          els.memFeedbackBanner.className += 'bg-red-500/15 text-red-500 border-red-500/30';
+        } else {
+          els.memFeedbackBanner.className += 'bg-amber-500/15 text-amber-500 border-amber-500/30';
+        }
+        els.memFeedbackBanner.textContent = message;
+      }
+
+      function evaluateSpokenWord(spokenWord, isFinal = true) {
+        const idx = state.mem.currentWordIdx;
+        const target = state.mem.words[idx];
+        if (!target) return false;
+
+        if (!normalizeForRecitation(spokenWord, false)) return false;
+
+        // مطابقة الكلمة الحالية
+        if (isWordMatch(spokenWord, target)) {
+          target.status = 'correct';
+          state.mem.correctCount += 1;
+          state.mem.streak += 1;
+          updateSingleMemWordDOM(idx);
+
+          state.mem.currentWordIdx += 1;
+          if (state.mem.currentWordIdx < state.mem.words.length) {
+            updateSingleMemWordDOM(state.mem.currentWordIdx);
+            const nextEl = document.getElementById(`mem-word-${state.mem.currentWordIdx}`);
+            if (nextEl) nextEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            showMemFeedback('success', 'أحسنت! استمر في التلاوة...');
+          } else {
+            finishMemorizationSession();
+          }
+          updateMemorizationStats();
+          return true;
+        }
+
+        // مطابقة كلمتين مدمجتين
+        const nextTarget = state.mem.words[idx + 1];
+        if (nextTarget) {
+          const combinedObj = {
+            normNoDagger: target.normNoDagger + nextTarget.normNoDagger,
+            normWithAlif: target.normWithAlif + nextTarget.normWithAlif
+          };
+          if (isWordMatch(spokenWord, combinedObj)) {
+            target.status = 'correct';
+            nextTarget.status = 'correct';
+            state.mem.correctCount += 2;
+            state.mem.streak += 2;
+            updateSingleMemWordDOM(idx);
+            updateSingleMemWordDOM(idx + 1);
+
+            state.mem.currentWordIdx += 2;
+            if (state.mem.currentWordIdx < state.mem.words.length) {
+              updateSingleMemWordDOM(state.mem.currentWordIdx);
+            } else {
+              finishMemorizationSession();
+            }
+            updateMemorizationStats();
+            return true;
+          }
+        }
+
+        // خطأ في التلاوة
+        if (isFinal) {
+          if (target.status !== 'wrong') state.mem.wrongCount += 1;
+          state.mem.streak = 0;
+          target.status = 'wrong';
+          updateSingleMemWordDOM(idx);
+          updateMemorizationStats();
+          showMemFeedback(
+            'error',
+            `تصحيح: نطقت "${spokenWord}" — والكلمة الصحيحة هي: ﴿${target.text}﴾ (أعد نطقها للمتابعة أو اضغط تخطي)`
+          );
+        }
+        return false;
+      }
+
+      function finishMemorizationSession() {
+        if (state.mem.isRecording) stopVoiceRecitation();
+        showMemFeedback('success', 'ما شاء الله! أتممت تسميع النطاق المحدد بنجاح، بارك الله في حفظك.');
+        showToast('تم إتمام التسميع بنجاح!');
+      }
+
+      function startVoiceRecitation() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          els.memMicFallbackNotice.classList.remove('hidden');
+          showToast('المتصفح لا يدعم التعرف الصوتي، استخدم حقل الكتابة');
+          return;
+        }
+
+        if (state.mem.currentWordIdx >= state.mem.words.length) buildMemorizationWords();
+        if (state.isPlaying) stopAudioPlayback();
+
+        try {
+          const recognition = new SpeechRecognition();
+          recognition.lang = 'ar-SA';
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.maxAlternatives = 3;
+
+          state.mem.recognition = recognition;
+          state.mem.isRecording = true;
+
+          els.memMicFallbackNotice.classList.add('hidden');
+          els.memLiveTranscriptBox.classList.remove('hidden');
+          els.memMicBtn.classList.remove('theme-accent-bg');
+          els.memMicBtn.classList.add('bg-red-600', 'text-white', 'mic-recording-pulse');
+          els.memMicBtnText.textContent = 'إيقاف التسميع الصوتي';
+          els.memStatusLine.textContent = 'جاري الاستماع الآن... اقرأ الآيات بصوت واضح';
+
+          let finalTranscriptAcc = '';
+          let processedWordCount = 0;
+
+          recognition.onresult = (event) => {
+            let interimText = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              const res = event.results[i];
+              const transcript = res[0].transcript.trim();
+              if (res.isFinal) {
+                finalTranscriptAcc += ' ' + transcript;
+                const finalWords = finalTranscriptAcc.trim().split(/\s+/).filter(Boolean);
+                while (processedWordCount < finalWords.length && state.mem.currentWordIdx < state.mem.words.length) {
+                  evaluateSpokenWord(finalWords[processedWordCount], true);
+                  processedWordCount += 1;
+                }
+              } else {
+                interimText += ' ' + transcript;
+              }
+            }
+
+            if (interimText.trim()) {
+              const interimWords = interimText.trim().split(/\s+/).filter(Boolean);
+              const lastInterim = interimWords[interimWords.length - 1];
+              if (lastInterim && state.mem.currentWordIdx < state.mem.words.length) {
+                if (evaluateSpokenWord(lastInterim, false)) processedWordCount += 1;
+              }
+            }
+
+            els.memLiveTranscriptText.textContent = (finalTranscriptAcc + ' ' + interimText).trim().slice(-140);
+          };
+
+          recognition.onerror = (event) => {
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+              els.memMicFallbackNotice.classList.remove('hidden');
+              stopVoiceRecitation();
+              showToast('تم رفض إذن الميكروفون؛ يمكنك التسميع بالكتابة');
+            }
+          };
+
+          recognition.onend = () => {
+            if (state.mem.isRecording && state.mem.currentWordIdx < state.mem.words.length) {
+              try {
+                finalTranscriptAcc = '';
+                processedWordCount = 0;
+                recognition.start();
+              } catch (e) {
+                stopVoiceRecitation();
+              }
+            } else {
+              stopVoiceRecitation();
+            }
+          };
+
+          recognition.start();
+        } catch (err) {
+          els.memMicFallbackNotice.classList.remove('hidden');
+          stopVoiceRecitation();
+        }
+      }
+
+      function stopVoiceRecitation() {
+        state.mem.isRecording = false;
+        if (state.mem.recognition) {
+          try {
+            state.mem.recognition.onend = null;
+            state.mem.recognition.stop();
+          } catch (e) {}
+          state.mem.recognition = null;
+        }
+        els.memMicBtn.classList.remove('bg-red-600', 'text-white', 'mic-recording-pulse');
+        els.memMicBtn.classList.add('theme-accent-bg');
+        els.memMicBtnText.textContent = 'ابدأ التسميع الصوتي';
+        els.memStatusLine.textContent = 'تم إيقاف الميكروفون. اضغط لمتابعة التسميع في أي وقت.';
+      }
+
+      /* ----------------------------------------------------------------------
+         ربط الأحداث
+         ---------------------------------------------------------------------- */
+      function bindEvents() {
+        els.mobileSidebarBtn.addEventListener('click', openSidebar);
+        els.closeSidebarBtn.addEventListener('click', closeSidebar);
+        els.sidebarOverlay.addEventListener('click', closeSidebar);
+        els.brandLogoBtn.addEventListener('click', () => loadSurah(1));
+
+        // السمات
+        els.themeButtons.forEach((btn) => {
+          btn.addEventListener('click', () => applyTheme(btn.getAttribute('data-theme-btn')));
+        });
+        els.mobileThemeCycleBtn.addEventListener('click', () => {
+          const order = ['dark', 'light', 'sepia'];
+          const next = order[(order.indexOf(state.theme) + 1) % order.length];
+          applyTheme(next);
+        });
+
+        // حجم الخط
+        els.fontIncreaseBtn.addEventListener('click', () => applyFontSize(state.fontSize + 2));
+        els.fontDecreaseBtn.addEventListener('click', () => applyFontSize(state.fontSize - 2));
+
+        // أوضاع العرض
+        els.modeVerseBtn.addEventListener('click', () => applyViewMode('verse'));
+        els.modeMushafBtn.addEventListener('click', () => applyViewMode('mushaf'));
+        els.modeMemorizeBtn.addEventListener('click', () => applyViewMode('memorize'));
+
+        // التجويد ونافذة دليل الألوان
+        els.toggleTajweedBtn.addEventListener('click', () => {
+          state.tajweedEnabled = !state.tajweedEnabled;
+          applyTajweedUI();
+          showToast(state.tajweedEnabled ? 'تم تفعيل التجويد الملون' : 'تم إيقاف التجويد الملون');
+        });
+
+        els.openTajweedModalBtn.addEventListener('click', () => {
+          els.tajweedModal.classList.remove('hidden');
+          els.tajweedModal.classList.add('flex');
+        });
+        els.closeTajweedModalBtn.addEventListener('click', () => {
+          els.tajweedModal.classList.add('hidden');
+          els.tajweedModal.classList.remove('flex');
+        });
+        els.tajweedModal.addEventListener('click', (e) => {
+          if (e.target === els.tajweedModal) {
+            els.tajweedModal.classList.add('hidden');
+            els.tajweedModal.classList.remove('flex');
+          }
+        });
+
+        // الشريط الجانبي والبحث
+        els.tabSurahsBtn.addEventListener('click', () => switchSidebarTab('surahs'));
+        els.tabBookmarksBtn.addEventListener('click', () => switchSidebarTab('bookmarks'));
+
+        els.surahSearchInput.addEventListener('input', (e) => {
+          const query = normalizeArabic(e.target.value);
+          state.filteredSurahs = !query
+            ? state.surahs
+            : state.surahs.filter((s) =>
+                normalizeArabic(s.name).includes(query) ||
+                s.englishName.toLowerCase().includes(query) ||
+                String(s.number) === query
+              );
+          renderSurahList();
+        });
+
+        els.surahListContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-surah-num]');
+          if (!btn) return;
+          closeSidebar();
+          loadSurah(parseInt(btn.getAttribute('data-surah-num'), 10));
+        });
+
+        els.bookmarksListContainer.addEventListener('click', (e) => {
+          const removeBtn = e.target.closest('[data-remove-bookmark]');
+          if (removeBtn) {
+            const idx = parseInt(removeBtn.getAttribute('data-remove-bookmark'), 10);
+            state.bookmarks.splice(idx, 1);
+            localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(state.bookmarks));
+            updateBookmarksBadge();
+            renderBookmarksList();
+            showToast('تمت الإزالة من المحفوظات');
+            return;
+          }
+          const gotoEl = e.target.closest('[data-goto-bookmark]');
+          if (gotoEl) {
+            const bm = state.bookmarks[parseInt(gotoEl.getAttribute('data-goto-bookmark'), 10)];
+            if (bm) {
+              closeSidebar();
+              loadSurah(bm.surahNumber, { targetAyahNumber: bm.ayahNumberInSurah, scrollToTop: false });
+            }
+          }
+        });
+
+        els.lastReadBtn.addEventListener('click', () => {
+          if (!state.lastRead) return;
+          closeSidebar();
+          loadSurah(state.lastRead.surahNumber, { targetAyahNumber: state.lastRead.ayahNumberInSurah, scrollToTop: false });
+        });
+
+        // أزرار السورة
+        els.playFullSurahBtn.addEventListener('click', () => {
+          if (state.ayahs.length > 0) playAyahByIndex(0);
+        });
+
+        els.toggleAllTafsirBtn.addEventListener('click', () => {
+          state.showAllTafsir = !state.showAllTafsir;
+          els.toggleAllTafsirLabel.textContent = state.showAllTafsir ? 'إخفاء التفسير للكل' : 'إظهار التفسير للكل';
+          renderAyahs();
+          highlightActiveAyah(false);
+        });
+
+        els.retryLoadBtn.addEventListener('click', () => loadSurah(state.currentSurahNumber));
+        els.closeMushafTafsirBtn.addEventListener('click', () => els.mushafTafsirBar.classList.add('hidden'));
+
+        // أحداث الآيات والتجويد
+        els.ayahsContainer.addEventListener('click', (e) => {
+          // إظهار حكم التجويد عند الضغط على الحرف الملون (مفيد جداً للجوال)
+          const tjEl = e.target.closest('.tj-rule');
+          if (tjEl && state.viewMode === 'verse') {
+            const ruleLabel = tjEl.getAttribute('data-rule');
+            if (ruleLabel) showToast(`حكم التجويد: ${ruleLabel}`);
+            return;
+          }
+
+          const mushafSpan = e.target.closest('[data-mushaf-index]');
+          if (mushafSpan) {
+            playAyahByIndex(parseInt(mushafSpan.getAttribute('data-mushaf-index'), 10));
+            return;
+          }
+
+          const playBtn = e.target.closest('[data-play-index]');
+          if (playBtn) {
+            const idx = parseInt(playBtn.getAttribute('data-play-index'), 10);
+            if (state.activeAyahIndex === idx && state.isPlaying) togglePlayPause();
+            else playAyahByIndex(idx);
+            return;
+          }
+
+          const tafsirBtn = e.target.closest('[data-tafsir-ayah]');
+          if (tafsirBtn) {
+            const ayahNum = parseInt(tafsirBtn.getAttribute('data-tafsir-ayah'), 10);
+            const box = document.getElementById(`tafsir-box-${ayahNum}`);
+            if (box) {
+              const willOpen = box.classList.contains('hidden');
+              box.classList.toggle('hidden', !willOpen);
+              tafsirBtn.classList.toggle('theme-accent-soft', willOpen);
+              if (willOpen) state.openTafsirSet.add(ayahNum);
+              else state.openTafsirSet.delete(ayahNum);
+            }
+            return;
+          }
+
+          const copyBtn = e.target.closest('[data-copy-index]');
+          if (copyBtn) {
+            const ayah = state.ayahs[parseInt(copyBtn.getAttribute('data-copy-index'), 10)];
+            if (ayah && state.currentSurahMeta) {
+              copyTextToClipboard(`﴿${ayah.displayText}﴾ [${state.currentSurahMeta.name}: ${toArabicDigits(ayah.numberInSurah)}]`);
+            }
+            return;
+          }
+
+          const bmBtn = e.target.closest('[data-bookmark-index]');
+          if (bmBtn) {
+            const ayah = state.ayahs[parseInt(bmBtn.getAttribute('data-bookmark-index'), 10)];
+            if (ayah) toggleBookmark(ayah);
+          }
+        });
+
+        // أحداث الحفظ والتسميع
+        els.memFromAyah.addEventListener('change', (e) => {
+          state.mem.fromAyah = parseInt(e.target.value, 10) || 1;
+          if (state.mem.fromAyah > state.mem.toAyah) {
+            state.mem.toAyah = state.mem.fromAyah;
+            els.memToAyah.value = String(state.mem.toAyah);
+          }
+          buildMemorizationWords();
+        });
+
+        els.memToAyah.addEventListener('change', (e) => {
+          state.mem.toAyah = parseInt(e.target.value, 10) || 1;
+          if (state.mem.toAyah < state.mem.fromAyah) {
+            state.mem.fromAyah = state.mem.toAyah;
+            els.memFromAyah.value = String(state.mem.fromAyah);
+          }
+          buildMemorizationWords();
+        });
+
+        els.memFullSurahRangeBtn.addEventListener('click', () => {
+          if (!state.ayahs.length) return;
+          state.mem.fromAyah = 1;
+          state.mem.toAyah = state.ayahs.length;
+          els.memFromAyah.value = '1';
+          els.memToAyah.value = String(state.ayahs.length);
+          buildMemorizationWords();
+        });
+
+        els.memToggleRevealBtn.addEventListener('click', () => {
+          state.mem.peekAll = !state.mem.peekAll;
+          els.memToggleRevealBtn.textContent = state.mem.peekAll ? 'إخفاء الكلمات' : 'إظهار الكلمات';
+          renderMemorizationWords();
+        });
+
+        els.memMicBtn.addEventListener('click', () => {
+          if (state.mem.isRecording) stopVoiceRecitation();
+          else startVoiceRecitation();
+        });
+
+        els.memHintBtn.addEventListener('click', () => {
+          const idx = state.mem.currentWordIdx;
+          const target = state.mem.words[idx];
+          if (!target) return;
+          target.status = 'hint';
+          updateSingleMemWordDOM(idx);
+          showMemFeedback('info', `تلميح: الكلمة الحالية هي ﴿${target.text}﴾ — انطقها للمتابعة أو اضغط تخطي.`);
+        });
+
+        els.memSkipBtn.addEventListener('click', () => {
+          const idx = state.mem.currentWordIdx;
+          const target = state.mem.words[idx];
+          if (!target) return;
+          if (target.status === 'hidden') target.status = 'hint';
+          updateSingleMemWordDOM(idx);
+          state.mem.currentWordIdx += 1;
+          if (state.mem.currentWordIdx < state.mem.words.length) {
+            updateSingleMemWordDOM(state.mem.currentWordIdx);
+            const nextEl = document.getElementById(`mem-word-${state.mem.currentWordIdx}`);
+            if (nextEl) nextEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            finishMemorizationSession();
+          }
+          updateMemorizationStats();
+        });
+
+        els.memHearAyahBtn.addEventListener('click', () => {
+          const target = state.mem.words[state.mem.currentWordIdx] || state.mem.words[state.mem.words.length - 1];
+          if (!target) return;
+          if (state.mem.isRecording) stopVoiceRecitation();
+          playAyahByIndex(target.ayahIdx);
+        });
+
+        els.memRestartBtn.addEventListener('click', () => {
+          buildMemorizationWords();
+          showToast('تمت إعادة التسميع من البداية');
+        });
+
+        els.memTypingForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const rawInput = els.memTypingInput.value.trim();
+          if (!rawInput) return;
+          rawInput.split(/\s+/).filter(Boolean).forEach((tok) => {
+            if (state.mem.currentWordIdx < state.mem.words.length) evaluateSpokenWord(tok, true);
+          });
+          els.memTypingInput.value = '';
+        });
+
+        // التنقل بين السور
+        els.prevSurahBtn.addEventListener('click', () => {
+          if (state.currentSurahNumber > 1) loadSurah(state.currentSurahNumber - 1);
+        });
+        els.nextSurahBtn.addEventListener('click', () => {
+          if (state.currentSurahNumber < 114) loadSurah(state.currentSurahNumber + 1);
+        });
+        els.scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // مشغّل الصوت
+        els.playPauseBtn.addEventListener('click', togglePlayPause);
+        els.prevAyahBtn.addEventListener('click', () => {
+          if (state.activeAyahIndex > 0) playAyahByIndex(state.activeAyahIndex - 1);
+        });
+        els.nextAyahBtn.addEventListener('click', () => {
+          if (state.activeAyahIndex < state.ayahs.length - 1) playAyahByIndex(state.activeAyahIndex + 1);
+        });
+        els.repeatAyahBtn.addEventListener('click', () => {
+          state.repeatAyah = !state.repeatAyah;
+          els.repeatAyahBtn.classList.toggle('theme-accent-bg', state.repeatAyah);
+          showToast(state.repeatAyah ? 'تم تفعيل تكرار الآية' : 'تم إيقاف تكرار الآية');
+        });
+        els.reciterSelect.addEventListener('change', (e) => switchReciter(e.target.value));
+        els.speedSelect.addEventListener('change', (e) => {
+          els.audio.playbackRate = parseFloat(e.target.value) || 1;
+        });
+        els.audioSeekBar.addEventListener('input', (e) => {
+          if (isFinite(els.audio.duration) && els.audio.duration > 0) {
+            els.audio.currentTime = (parseFloat(e.target.value) / 100) * els.audio.duration;
+          }
+        });
+
+        els.audio.addEventListener('timeupdate', () => {
+          if (!isFinite(els.audio.duration) || els.audio.duration === 0) return;
+          els.audioSeekBar.value = (els.audio.currentTime / els.audio.duration) * 100;
+          els.audioCurrentTime.textContent = formatTime(els.audio.currentTime);
+        });
+        els.audio.addEventListener('loadedmetadata', () => {
+          els.audioDuration.textContent = formatTime(els.audio.duration);
+        });
+        els.audio.addEventListener('waiting', () => showAudioSpinner(true));
+        els.audio.addEventListener('playing', () => {
+          state.isPlaying = true;
+          showAudioSpinner(false);
+        });
+        els.audio.addEventListener('ended', () => {
+          if (state.repeatAyah) {
+            els.audio.currentTime = 0;
+            els.audio.play();
+            return;
+          }
+          if (state.activeAyahIndex < state.ayahs.length - 1) {
+            playAyahByIndex(state.activeAyahIndex + 1);
+          } else {
+            state.isPlaying = false;
+            updatePlayPauseIcons();
+            showToast('تمت تلاوة السورة بحمد الله');
+          }
+        });
+        els.audio.addEventListener('error', () => {
+          state.isPlaying = false;
+          showAudioSpinner(false);
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         التشغيل الابتدائي
+         ---------------------------------------------------------------------- */
+      function init() {
+        applyTheme(state.theme);
+        applyFontSize(state.fontSize);
+        applyTajweedUI();
+        applyViewMode(state.viewMode);
+        els.reciterSelect.value = state.reciter;
+
+        switchSidebarTab('surahs');
+        updateBookmarksBadge();
+        renderLastReadCard();
+        bindEvents();
+
+        fetchSurahList();
+        const initialSurah = state.lastRead?.surahNumber || 1;
+        const initialAyah = state.lastRead?.ayahNumberInSurah || 1;
+        loadSurah(initialSurah, { targetAyahNumber: initialAyah, scrollToTop: true });
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
